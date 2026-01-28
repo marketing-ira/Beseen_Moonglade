@@ -9,6 +9,8 @@ function LazyDownloadBrochure() {
   const placeholderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (typeof window === "undefined" || !("IntersectionObserver" in window)) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {

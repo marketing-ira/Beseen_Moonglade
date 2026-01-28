@@ -141,7 +141,14 @@ export const Head: HeadFC = () => (
     />
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-
+    
+    {/* Preload critical hero images */}
+    <link
+      rel="preload"
+      as="image"
+      href="/static/105f3cee5979e47c13130c0b75d8124e/d97f4/moonglade-hero.png"
+      media="(min-width: 640px)"
+    />
 
     <link rel="canonical" href="https://beseen.moonglade.life" />
 

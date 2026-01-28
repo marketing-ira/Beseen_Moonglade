@@ -225,7 +225,7 @@ export const onRenderBody: GatsbySSR["onRenderBody"] = ({
 
   const gtmNoScript = `
     <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KJSLTFS4"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    height="0" width="0" style="display:none;visibility:hidden" sandbox="allow-scripts allow-same-origin allow-storage-access"></iframe>
   `.replace(/\s+/g, " ");
 
 
@@ -240,6 +240,28 @@ export const onRenderBody: GatsbySSR["onRenderBody"] = ({
       key: "favicon",
       rel: "icon",
       href: "/favicon.svg",
+    }),
+
+    // Preload and defer-loading Cloudflare Turnstile to ensure challenge assets are used promptly
+    React.createElement("link", {
+      key: "turnstile-preload",
+      rel: "preload",
+      href: "https://challenges.cloudflare.com/turnstile/v0/api.js",
+      as: "script",
+      crossOrigin: "anonymous",
+    }),
+
+    React.createElement("script", {
+      key: "turnstile-script",
+      src: "https://challenges.cloudflare.com/turnstile/v0/api.js",
+      defer: true,
+      crossOrigin: "anonymous",
+    }),
+
+    React.createElement("meta", {
+      key: "permissions-policy",
+      httpEquiv: "Permissions-Policy",
+      content: "storage-access=('self' 'https://www.googletagmanager.com' 'https://do8wl071qiuy9.cloudfront.net'), interest-cohort=()",
     }),
 
     React.createElement("script", {

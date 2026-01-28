@@ -8,6 +8,10 @@ node_modules/
 dist/
 public/
 build/
+node_modules
+.cache
+public
+src/gatsby-types.d.ts
 
 
 # Compiled Java class files

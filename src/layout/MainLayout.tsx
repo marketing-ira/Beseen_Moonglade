@@ -2,10 +2,7 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import MobileActions from "../components/MobileActions";
-
-const ContactCard = React.lazy(
-  () => import("../components/common/ContactCard")
-);
+import ContactCard from "../components/common/ContactCard";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -22,10 +19,14 @@ function MainLayout({
   setIsModalTitle,
   isShowModalTitle
 }: MainLayoutProps) {
-
+  const [isMounted, setIsMounted] = React.useState(false);
 
   React.useEffect(() => {
-    if (typeof window === "undefined") return;
+    setIsMounted(true);
+  }, []);
+
+  React.useEffect(() => {
+    if (!isMounted || typeof window === "undefined") return;
 
     const hash = window.location.hash;
     if (!hash) return;
@@ -34,7 +35,7 @@ function MainLayout({
     let attempts = 0;
     const maxAttempts = 40;
 
-    const interval = setInterval(() => {
+    const interval: ReturnType<typeof setInterval> = setInterval(() => {
       const el = document.getElementById(id);
 
       if (el) {
@@ -57,11 +58,13 @@ function MainLayout({
     }, 120);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isMounted]);
 
 
 
   React.useEffect(() => {
+    if (typeof window === "undefined" || typeof document === "undefined") return;
+
     const html = document.documentElement;
     const body = document.body;
 
@@ -75,10 +78,14 @@ function MainLayout({
   }, [isModalShow]);
 
 
+  // Always initialize with false to ensure server/client consistency
+  // Will be updated in useEffect after mount
   const [isDesktop, setIsDesktop] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   React.useEffect(() => {
+    if (typeof window === "undefined" || typeof document === "undefined") return;
+
     const checkDesktop = () => {
       const isDesktopView = window.innerWidth > 768;
       setIsDesktop(isDesktopView);
@@ -91,6 +98,8 @@ function MainLayout({
         script.async = true;
         script.id = "wa-widget";
         script.setAttribute("widget-id", "tGQzGZ");
+        // Allow storage access for the widget
+        script.setAttribute("allow-storage-access", "true");
         document.body.appendChild(script);
       } else if (!isDesktopView && existingScript) {
         existingScript.remove();
@@ -161,14 +170,12 @@ function MainLayout({
           }}
           className="fixed inset-0 z-50 w-full h-full bg-black/20 backdrop-blur-md flex justify-center items-center sm:mt-8"
         >
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <div onClick={(e) => e.stopPropagation()}>
-              <ContactCard
-                setIsModalShow={setIsModalShow}
-                isShowModalTitle={isShowModalTitle}
-              />
-            </div>
-          </React.Suspense>
+          <div onClick={(e) => e.stopPropagation()}>
+            <ContactCard
+              setIsModalShow={setIsModalShow}
+              isShowModalTitle={isShowModalTitle}
+            />
+          </div>
         </section>
       )}
     </>

@@ -38,3 +38,7 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    # Allow third-party storage access for tracking and analytics
+    Permissions-Policy = "storage-access=('self' 'https://www.googletagmanager.com' 'https://do8wl071qiuy9.cloudfront.net')"
+    # Explicit Content Security Policy to avoid fallback warnings. Adjust sources as needed.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.segment.com https://www.googletagservices.com https://challenges.cloudflare.com; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://api.segment.io https://stats.g.doubleclick.net https://challenges.cloudflare.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"

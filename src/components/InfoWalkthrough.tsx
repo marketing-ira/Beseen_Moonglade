@@ -17,6 +17,8 @@ const InfoWalkthrough = () => {
   const [isVideoModalShow, setIsVideoModalShow] = useState(false);
 
   React.useEffect(() => {
+    if (typeof window === "undefined" || typeof document === "undefined") return;
+
     const html = document.documentElement;
     const body = document.body;
     if (isVideoModalShow) {
@@ -67,11 +69,12 @@ const InfoWalkthrough = () => {
         {featureGradient && (
           <img
             src={featureGradient.publicURL}
-            alt=""
-            aria-hidden
+            alt="Decorative gradient background"
+            aria-hidden="true"
             className="pointer-events-none select-none absolute inset-0 w-full h-full object-cover opacity-[0.06] -z-10"
-            loading="eager"
+            loading="lazy"
             decoding="async"
+                style={{ opacity: 0.06 }}
           />
         )}
 

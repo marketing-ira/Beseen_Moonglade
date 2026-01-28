@@ -14,19 +14,24 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   onWhatsAppClick,
   mobileThreshold = 640,
 }) => {
-  const [isMobile, setIsMobile] = React.useState<boolean>(
-    typeof window !== "undefined" ? window.innerWidth <= mobileThreshold : false
-  );
+  const [isMobile, setIsMobile] = React.useState<boolean>(false);
+  const [isMounted, setIsMounted] = React.useState(false);
 
   React.useEffect(() => {
     if (typeof window === "undefined") return;
-    const check = () => setIsMobile(window.innerWidth <= mobileThreshold);
+    
+    setIsMounted(true);
+    const check = () => {
+      if (typeof window !== "undefined") {
+        setIsMobile(window.innerWidth <= mobileThreshold);
+      }
+    };
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, [mobileThreshold]);
 
-  if (!isMobile) return null;
+  if (!isMounted || !isMobile) return null;
 
   const containerStyle: React.CSSProperties = {
     position: "fixed",

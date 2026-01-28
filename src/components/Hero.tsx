@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useStaticQuery, graphql } from "gatsby";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 
 import Einfraa from "../assets/icons/einfraa.svg";
 import IraWhite from "../assets/icons/Irawhite.svg";
 
-const ContactCard = React.lazy(() => import("./common/ContactCard"));
+import ContactCard from "./common/ContactCard";
 
 interface FileNode {
   relativePath: string;
@@ -18,6 +18,7 @@ interface HeroProps {
 }
 
 function Hero({ setIsModalShow, isModalShow }: HeroProps) {
+  const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
   const data = useStaticQuery(graphql`
     query HeroImages {
       allFile(
@@ -60,43 +61,79 @@ function Hero({ setIsModalShow, isModalShow }: HeroProps) {
     : null;
 
   return (
-    <section
-      id="/"
-      className="w-full mt-[64px] sm:mt-[76px] lg:mt-[88px]"
-      aria-label="Hero Section"
-    >
-      {/* Desktop Hero Image */}
-      <div className="hidden sm:block w-full">
-        {desktopImage && (
-          <GatsbyImage
-            image={desktopImage}
-            alt="Moonglade hero"
-            loading="eager"
-            fetchPriority="high"
-            className="w-full h-auto"
-            imgStyle={{
-              objectFit: "contain",
-              objectPosition: "center",
-            }}
-          />
-        )}
-      </div>
-      {/* Mobile Hero Image */}
-      <div className="block sm:hidden">
-        {(mobileImage || desktopImage) && (
-          <GatsbyImage
-            image={mobileImage || desktopImage}
-            alt="Moonglade mobile hero"
-            loading="eager"
-            fetchPriority="high"
-            className="w-full"
-            style={{ maxHeight: "100vh" }}
-            imgStyle={{ objectFit: "cover" }}
-          />
-        )}
-      </div>
+    <>
+      <section
+        id="/"
+        className="relative w-full mt-[64px] sm:mt-[76px] lg:mt-[88px]"
+        aria-label="Hero Section"
+      >
+        {/* Download Brochure Button - Top Right */}
+        <button
+          onClick={() => setIsBrochureModalOpen(true)}
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 sm:bottom-auto sm:left-auto sm:translate-x-0 sm:top-6 sm:right-6 md:top-1/2 md:-translate-y-1/2 md:right-8 z-10 text-white rounded-full shadow-lg hover:bg-[#16a6df] transition-colors
+          font-['Prata'] inline-flex items-center justify-center text-white bg-[#16a6df] px-6 sm:px-8 lg:px-6 py-3 sm:py-4 text-[12px] sm:text-[16px] lg:text-[18px] shadow-sm"
+          aria-label="Download Brochure"
+        >
+          Download Brochure
+        </button>
+        {/* sm:top-6 sm:right-6 md:top-1/2 md:-translate-y-1/2 md:right-8 */}
+        {/* Desktop Hero Image */}
+        <div className="hidden sm:block w-full">
+          {desktopImage && (
+            <GatsbyImage
+              image={desktopImage}
+              alt="Moonglade luxury apartments in Kokapet, Hyderabad - Premium 3 & 4 BHK flats near Financial District"
+              loading="eager"
+              fetchPriority="high"
+              className="w-full h-auto"
+              imgStyle={{
+                objectFit: "contain",
+                objectPosition: "center",
+              }}
+            />
+          )}
+        </div>
+        {/* Mobile Hero Image */}
+        <div className="block sm:hidden">
+          {(mobileImage || desktopImage) && (
+            <GatsbyImage
+              image={(mobileImage || desktopImage)!}
+              alt="Moonglade luxury apartments in Kokapet, Hyderabad - Premium 3 & 4 BHK flats near Financial District"
+              loading="eager"
+              fetchPriority="high"
+              className="w-full"
+              style={{ maxHeight: "100vh" }}
+              imgStyle={{ objectFit: "cover" }}
+            />
+          )}
+        </div>
+      </section>
 
-    </section>
+      {/* Brochure Modal */}
+      {isBrochureModalOpen && (
+        <section
+          onClick={() => setIsBrochureModalOpen(false)}
+          className="fixed inset-0 z-50 w-full h-full bg-black/20 backdrop-blur-md flex justify-center items-start pt-[84px] sm:pt-[96px] px-4"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative"
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setIsBrochureModalOpen(false)}
+              className="absolute top-2 right-2 z-10 text-white bg-black/50 hover:bg-black/70 rounded-full w-8 h-8 flex items-center justify-center text-xl font-bold transition-colors
+              "
+              aria-label="Close modal"
+            >
+              ×
+            </button>
+            
+            <ContactCard showEmail={false} />
+          </div>
+        </section>
+      )}
+    </>
   );
 }
 

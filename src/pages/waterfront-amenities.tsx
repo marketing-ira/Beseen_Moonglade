@@ -28,10 +28,10 @@ export default WaterfrontAmenities;
 
 export const Head: HeadFC = () => (
   <>
-    <title>Waterfront Amenities</title>
+    <title>Waterfront Amenities | Moonglade Kokapet</title>
     <meta
       name="description"
-      content="Explore Moonglade's waterfront amenities, features, and lifestyle offerings. Book a site visit and download the brochure."
+      content="Explore Moonglade's premium waterfront amenities in Kokapet, Hyderabad. Features include Zen Zone, Sun Deck, Skating Ring, Aquatic Pool, and more. Book a site visit today!"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     
@@ -40,5 +40,22 @@ export const Head: HeadFC = () => (
     <link rel="dns-prefetch" href="//fonts.gstatic.com" />
     
     <link rel="canonical" href="https://beseen.moonglade.life/waterfront-amenities" />
+    
+    {/* Open Graph Tags */}
+    <meta property="og:title" content="Waterfront Amenities | Moonglade Kokapet" />
+    <meta property="og:description" content="Explore Moonglade's premium waterfront amenities in Kokapet, Hyderabad. Features include Zen Zone, Sun Deck, Skating Ring, Aquatic Pool, and more." />
+    <meta property="og:image" content="https://beseen.moonglade.life/static/105f3cee5979e47c13130c0b75d8124e/d97f4/moonglade-hero.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://beseen.moonglade.life/waterfront-amenities" />
+    <meta property="og:site_name" content="Moonglade" />
+    
+    {/* Twitter Card */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Waterfront Amenities | Moonglade Kokapet" />
+    <meta name="twitter:description" content="Explore Moonglade's premium waterfront amenities in Kokapet, Hyderabad." />
+    <meta name="twitter:image" content="https://beseen.moonglade.life/static/105f3cee5979e47c13130c0b75d8124e/d97f4/moonglade-hero.png" />
+    
+    <meta name="robots" content="index, follow" />
+    <meta name="keywords" content="waterfront amenities, Kokapet, luxury apartments, Moonglade, Hyderabad, premium facilities" />
   </>
 );

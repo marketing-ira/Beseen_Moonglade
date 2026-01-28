@@ -37,9 +37,10 @@ function DownloadBrochureWithForm() {
   useEffect(() => {
     if (!isClient) return;
 
-    if (!(window as any).turnstile) {
+    const TURNSTILE_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+    if (!(window as any).turnstile && !document.querySelector(`script[src="${TURNSTILE_SRC}"]`)) {
       const script = document.createElement("script");
-      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+      script.src = TURNSTILE_SRC;
       script.async = true;
       document.body.appendChild(script);
     }

@@ -82,9 +82,9 @@ const Features: React.FC<FeaturesProps> = ({ type, list }) => {
   const columns = splitIntoColumns(list, 5);
 
   return (
-    <>
+    <div id="#amenities">
       <section
-        id="#amenities"
+       
         className="block xl:hidden w-full flex flex-col items-center text-center pb-10 bg-[#25336C]"
         aria-label={`${getTitle()} section`}
       >
@@ -129,6 +129,7 @@ const Features: React.FC<FeaturesProps> = ({ type, list }) => {
       </section>
 
       <section
+    
         className="hidden xl:flex relative w-full h-[140vh] overflow-hidden flex-col justify-end items-center pb-[59px]"
         aria-label={`${getTitle()} section`}
       >
@@ -187,7 +188,7 @@ const Features: React.FC<FeaturesProps> = ({ type, list }) => {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

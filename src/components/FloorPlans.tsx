@@ -94,6 +94,8 @@ function FloorPlans({ setIsModalShow  ,setIsModalTitle}: FloorPlansPropsType) {
     ])
   );
   useEffect(() => {
+    if (typeof window === "undefined" || typeof document === "undefined") return;
+
     const html = document.documentElement;
     const body = document.body;
     if (isGalleryModalShow) {
@@ -176,7 +178,10 @@ function FloorPlans({ setIsModalShow  ,setIsModalTitle}: FloorPlansPropsType) {
                   <div className="absolute inset-0 flex flex-col items-center justify-evenly text-center bg-[#3b3e91]/80">
                     <div className="flex items-center justify-center   text-white">
                       <div className="hidden md:block">
-                        <Lock className="w-[32px] h-[32px] sm:w-[40px] sm:h-[40px] md:w-[48px] md:h-[48px] lg:w-[48px] lg:h-[48px]" />
+                        <div className="w-[32px] h-[32px] sm:w-[40px] sm:h-[40px] md:w-[48px] md:h-[48px] lg:w-[48 px] lg:h-[48px]">
+                        
+                        <Lock  />
+                        </div>
                       </div>
                     </div>
 

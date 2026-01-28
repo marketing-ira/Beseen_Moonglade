@@ -57,7 +57,9 @@ function Navbar({ setIsModalShow, setIsModalTitle, isMobileMenuOpen, setIsMobile
     <header className="fixed top-0 inset-x-0 px-4 sm:px-[120px] bg-bgPrimary z-[999] h-[64px] sm:h-[76px] lg:h-[88px] w-full">
       <nav className="flex items-center justify-between h-full">
         <Link to="/" aria-label="Home">
-          <NavLogo className="w-[118px] md:w-[237px]" />
+          <div className="w-[118px] md:w-[237px]">
+            <NavLogo />
+          </div>
         </Link>
 
         <div className="hidden lg:flex gap-10 items-center">
@@ -79,7 +81,9 @@ function Navbar({ setIsModalShow, setIsModalTitle, isMobileMenuOpen, setIsMobile
           className="lg:hidden p-2 ml-auto"
           aria-label="Toggle mobile menu"
         >
-          <MobileMenu className="h-6 w-6 sm:h-7 sm:w-7" />
+          <div className="h-6 w-6 sm:h-7 sm:w-7">
+            <MobileMenu />
+          </div>
         </button>
       </nav>
 
@@ -95,7 +99,9 @@ function Navbar({ setIsModalShow, setIsModalTitle, isMobileMenuOpen, setIsMobile
           ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"}`}
       >
         <header className="flex justify-between items-center p-6 border-b">
-          <NavLogo className="h-8" />
+          <div className="h-8">
+            <NavLogo />
+          </div>
 
           <button onClick={closeMobileMenu} aria-label="Close">
             ✕
