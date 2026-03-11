@@ -64,6 +64,7 @@ function MoongladeLocality() {
   src="https://www.google.com/maps/d/u/0/embed?mid=1VpmgUE0x-ycti9Hgqud6yvpFm5J34C8"
   width="100%"
   height="550"
+  title="Moonglade Location Map"
   style={{
     border: 0,
     position: "absolute",

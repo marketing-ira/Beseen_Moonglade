@@ -19,6 +19,10 @@ interface HeroProps {
 
 function Hero({ setIsModalShow, isModalShow }: HeroProps) {
   const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
   const data = useStaticQuery(graphql`
     query HeroImages {
       allFile(
@@ -79,7 +83,7 @@ function Hero({ setIsModalShow, isModalShow }: HeroProps) {
         {/* sm:top-6 sm:right-6 md:top-1/2 md:-translate-y-1/2 md:right-8 */}
         {/* Desktop Hero Image */}
         <div className="hidden sm:block w-full">
-          {desktopImage && (
+          {desktopImage ? (
             <GatsbyImage
               image={desktopImage}
               alt="Moonglade luxury apartments in Kokapet, Hyderabad - Premium 3 & 4 BHK flats near Financial District"
@@ -91,11 +95,13 @@ function Hero({ setIsModalShow, isModalShow }: HeroProps) {
                 objectPosition: "center",
               }}
             />
+          ) : (
+            <div className="w-full h-[400px] bg-gray-200 animate-pulse" aria-label="Hero image placeholder" />
           )}
         </div>
         {/* Mobile Hero Image */}
         <div className="block sm:hidden">
-          {(mobileImage || desktopImage) && (
+          {(mobileImage || desktopImage) ? (
             <GatsbyImage
               image={(mobileImage || desktopImage)!}
               alt="Moonglade luxury apartments in Kokapet, Hyderabad - Premium 3 & 4 BHK flats near Financial District"
@@ -105,12 +111,14 @@ function Hero({ setIsModalShow, isModalShow }: HeroProps) {
               style={{ maxHeight: "100vh" }}
               imgStyle={{ objectFit: "cover" }}
             />
+          ) : (
+            <div className="w-full h-[400px] bg-gray-200 animate-pulse" aria-label="Hero image placeholder" />
           )}
         </div>
       </section>
 
-      {/* Brochure Modal */}
-      {isBrochureModalOpen && (
+      {/* Brochure Modal (client-only to avoid hydration mismatch) */}
+      {mounted && isBrochureModalOpen && (
         <section
           onClick={() => setIsBrochureModalOpen(false)}
           className="fixed inset-0 z-50 w-full h-full bg-black/20 backdrop-blur-md flex justify-center items-start pt-[84px] sm:pt-[96px] px-4"
@@ -122,13 +130,11 @@ function Hero({ setIsModalShow, isModalShow }: HeroProps) {
             {/* Close Button */}
             <button
               onClick={() => setIsBrochureModalOpen(false)}
-              className="absolute top-2 right-2 z-10 text-white bg-black/50 hover:bg-black/70 rounded-full w-8 h-8 flex items-center justify-center text-xl font-bold transition-colors
-              "
+              className="absolute top-2 right-2 z-10 text-white bg-black/50 hover:bg-black/70 rounded-full w-8 h-8 flex items-center justify-center text-xl font-bold transition-colors"
               aria-label="Close modal"
             >
               ×
             </button>
-            
             <ContactCard showEmail={false} />
           </div>
         </section>
@@ -303,4 +309,3 @@ export default Hero;
 // }
 
 // export default Hero;
-

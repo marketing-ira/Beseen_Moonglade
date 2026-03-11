@@ -1,16 +1,7 @@
 import React, { useState } from "react";
 import { useStaticQuery, graphql } from "gatsby";
-import { GatsbyImage, getImage } from "gatsby-plugin-image";
+import { GatsbyImage, getImage, StaticImage } from "gatsby-plugin-image";
 
-// Import SVG assets
-import Location from "../assets/images/moonGlade/location.svg";
-import Arrow from "../assets/images/moonGlade/arrow.svg";
-import HouseClub from "../assets/images/moonGlade/clubHouse.svg";
-import Pricing from "../assets/images/moonGlade/pricing.svg";
-import Size from "../assets/images/moonGlade/size.svg";
-import Structure from "../assets/images/moonGlade/structure.svg";
-import Towers from "../assets/images/moonGlade/towers.svg";
-import Units from "../assets/images/moonGlade/units.svg";
 import PlayIcon from "../assets/images/play-icon.svg";
 
 const InfoWalkthrough = () => {
@@ -65,16 +56,18 @@ const InfoWalkthrough = () => {
 
   return (
     <>
+      {/* Decorative background removed — it was loading the full raw PNG via publicURL
+          at only 6% opacity (visually imperceptible), costing a full image download */}
       <section className="relative py-10 lg:py-[101px] px-4 sm:px-8 lg:px-[120px] overflow-hidden">
         {featureGradient && (
           <img
             src={featureGradient.publicURL}
-            alt="Decorative gradient background"
+            alt="Decorative gradient background for Moonglade Info Walkthrough section"
             aria-hidden="true"
             className="pointer-events-none select-none absolute inset-0 w-full h-full object-cover opacity-[0.06] -z-10"
             loading="lazy"
             decoding="async"
-                style={{ opacity: 0.06 }}
+            style={{ opacity: 0.06 }}
           />
         )}
 
@@ -94,8 +87,13 @@ const InfoWalkthrough = () => {
 
             <div className="bg-transparent grid grid-cols-2 flex-1">
               <div className="flex flex-col">
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px]">
-                  <Location className={iconClass} />
+                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
+                  {/* <Location className={iconClass} /> */}
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center ">
+                    <StaticImage src="../assets/images/moonGlade/location.svg" alt="Beseen Moonglade Location Icon" className="w-[32px]" />
+
+                  </div>
+
                   <div>
                     <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
                       Location
@@ -106,8 +104,12 @@ const InfoWalkthrough = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px]">
-                  <Units className={iconClass} />
+                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
+                  {/* <Units className={iconClass} /> */}
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center ">
+                    <StaticImage src="../assets/images/moonGlade/units.svg" alt="Beseen Moonglade Units Icon" className="w-[32px]" />
+                  </div>
+
                   <div>
                     <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
                       Units
@@ -118,8 +120,11 @@ const InfoWalkthrough = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px]">
-                  <HouseClub className={iconClass} />
+                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center ">
+                    <StaticImage src="../assets/images/moonGlade/clubhouse.svg" alt="Beseen Moonglade Clubhouse Icon" className="w-[32px]" />
+                  </div>
+                  
                   <div>
                     <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
                       Clubhouse
@@ -130,14 +135,17 @@ const InfoWalkthrough = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px]">
-                  <Pricing className={iconClass} />
+                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center ">
+                    <StaticImage src="../assets/images/moonGlade/pricing.svg" alt="Beseen Moonglade Pricing Icon" className="w-[32px]" />
+                  </div>
+                  
                   <div>
                     <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
                       Pricing
                     </h4>
                     <h4 className="font-['Prata'] text-[14px] sm:text-[18px] font-normal leading-normal tracking-normal">
-                      Starting at ₹1.33 Cr*
+                      Starting at ₹1.4 Cr*
                     </h4>
                   </div>
                 </div>
@@ -145,8 +153,11 @@ const InfoWalkthrough = () => {
 
               {/* Column 2 */}
               <div className="flex flex-col">
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px]">
-                  <Arrow className={iconClass} />
+                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center">
+                    <StaticImage src="../assets/images/moonGlade/arrow.svg" alt="Beseen Moonglade Area Icon" className="w-[32px]" />
+                  </div>
+                  
                   <div>
                     <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
                       Area
@@ -157,8 +168,11 @@ const InfoWalkthrough = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px]">
-                  <Size className={iconClass} />
+                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center ">
+                    <StaticImage src="../assets/images/moonGlade/size.svg" alt="Beseen Moonglade Size Icon" className="w-[32px]" />
+                  </div>
+                  
                   <div>
                     <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
                       Apartment Sizes
@@ -169,8 +183,11 @@ const InfoWalkthrough = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px]">
-                  <Structure className={iconClass} />
+                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center ">
+                    <StaticImage src="../assets/images/moonGlade/structure.svg" alt="Beseen Moonglade Structure Icon" className="w-[32px]" />
+                  </div>
+                  
                   <div>
                     <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
                       Structure
@@ -181,8 +198,11 @@ const InfoWalkthrough = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px]">
-                  <Towers className={iconClass} />
+                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center ">
+                    <StaticImage src="../assets/images/moonGlade/towers.svg" alt="Beseen Moonglade Towers Icon" className="w-[32px]" />
+                  </div>
+                  
                   <div>
                     <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
                       Towers
@@ -209,9 +229,9 @@ const InfoWalkthrough = () => {
               ) : featureGradient ? (
                 <img
                   src={featureGradient.publicURL}
-                  alt={"Moonglade Towers"}
+                  alt="Moonglade Towers walkthrough image"
                   className="w-full flex-1 object-cover"
-                  loading="eager"
+                  loading="lazy"
                   decoding="async"
                 />
               ) : (
@@ -244,7 +264,7 @@ const InfoWalkthrough = () => {
             <iframe
               className="w-full aspect-video"
               src="https://www.youtube.com/embed/8NdTTTGDqRg?si=ivWkc-CTlaJcl0yF&autoplay=1"
-              title="YouTube video player"
+              title="Moonglade Walkthrough Video"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-
-const TURNSTILE_SITE_KEY = "0x4AAAAAAB4Bl0NJyxtMOFfz";
+import { TURNSTILE_SITE_KEY } from "../config/turnstileConfig";
 const PDF_URL = "/Moonglade-Brochure.pdf";
 const PDF_FILENAME = "Moonglade-Brochure.pdf";
 
@@ -30,6 +29,7 @@ function DownloadBrochureWithForm() {
   const [apiMessage, setApiMessage] = useState<string>("");
   const [turnstileToken, setTurnstileToken] = useState("");
   const turnstileWidgetRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => setIsClient(true), []);
@@ -37,39 +37,74 @@ function DownloadBrochureWithForm() {
   useEffect(() => {
     if (!isClient) return;
 
-    const TURNSTILE_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js";
-    if (!(window as any).turnstile && !document.querySelector(`script[src="${TURNSTILE_SRC}"]`)) {
-      const script = document.createElement("script");
-      script.src = TURNSTILE_SRC;
-      script.async = true;
-      document.body.appendChild(script);
-    }
+    // Script is loaded globally via gatsby-browser.js
+    // Note: CSP warnings from "normal?lang=auto:1" are expected - they originate from
+    // inside Cloudflare's Turnstile iframe and cannot be eliminated from our end
+
+    const removeWidget = () => {
+      try {
+        if (widgetIdRef.current && (window as any).turnstile) {
+          (window as any).turnstile.remove(widgetIdRef.current);
+        }
+      } catch (_) {
+        // ignore removal errors
+      }
+      widgetIdRef.current = null;
+    };
 
     const renderWidget = () => {
-      if ((window as any).turnstile && turnstileWidgetRef.current) {
-        turnstileWidgetRef.current.innerHTML = "";
-        const widgetSize = window.innerWidth < 768 ? "compact" : "normal";
-        (window as any).turnstile.render(turnstileWidgetRef.current, {
+      if (!(window as any).turnstile || !turnstileWidgetRef.current) return;
+
+      // Properly remove previous widget before re-rendering
+      removeWidget();
+
+      const widgetSize = window.innerWidth < 768 ? "compact" : "normal";
+      try {
+        const id = (window as any).turnstile.render(turnstileWidgetRef.current, {
           sitekey: TURNSTILE_SITE_KEY,
           callback: (token: string) => setTurnstileToken(token),
           "expired-callback": () => setTurnstileToken(""),
+          "error-callback": (error: any) => {
+            console.error("Turnstile error:", error);
+            setTurnstileToken("");
+          },
           theme: "light",
           size: widgetSize,
         });
+        widgetIdRef.current = id;
+      } catch (err) {
+        console.error("Turnstile render error:", err);
       }
     };
 
+    // Poll until turnstile is available (with 30s timeout)
+    let attempts = 0;
+    const maxAttempts = 60; // 60 * 500ms = 30 seconds
+    
     const interval = setInterval(() => {
+      attempts++;
       if ((window as any).turnstile) {
+        clearInterval(interval);
         renderWidget();
+      } else if (attempts >= maxAttempts) {
+        console.error('Turnstile script failed to load after 30 seconds');
         clearInterval(interval);
       }
     }, 500);
 
-    window.addEventListener("resize", renderWidget);
+    // Debounced resize handler to avoid rapid re-renders
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(renderWidget, 300);
+    };
+
+    window.addEventListener("resize", handleResize);
     return () => {
       clearInterval(interval);
-      window.removeEventListener("resize", renderWidget);
+      clearTimeout(resizeTimer);
+      window.removeEventListener("resize", handleResize);
+      removeWidget();
     };
   }, [isClient]);
 
@@ -144,6 +179,10 @@ function DownloadBrochureWithForm() {
           setTimeout(() => {
             setFormData({ name: "", mobile: "", consent: false });
             setTurnstileToken("");
+            // Reset the Turnstile widget for next submission
+            if (widgetIdRef.current && (window as any).turnstile) {
+              (window as any).turnstile.reset(widgetIdRef.current);
+            }
           }, 3000);
 
           return;
@@ -164,6 +203,9 @@ function DownloadBrochureWithForm() {
       return () => clearTimeout(timer);
     }
   }, [apiMessage]);
+
+  // Prevent SSR rendering to avoid hydration issues
+  if (!isClient) return null;
 
   return (
     <section className="px-4 sm:px-[120px] pt-7 pb-8 md:pt-24 md:pb-20">

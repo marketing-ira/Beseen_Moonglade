@@ -50,7 +50,7 @@ function Hero({ hideContactCard = false }: HeroProps) {
           alt="Moonglade waterfront amenities in Kokapet, Hyderabad - Premium luxury apartments with stunning water features"
           className="w-full h-full"
           loading="eager"
-          fetchPriority="high"
+        
           style={{ height: "100vh" }}
           objectFit="cover"
           objectPosition="center"

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { graphql, useStaticQuery } from "gatsby";
-import { GatsbyImage, getImage } from "gatsby-plugin-image";
+import { GatsbyImage, getImage, StaticImage } from "gatsby-plugin-image";
 import { GrPrevious, GrNext, GrFormClose } from "react-icons/gr";
 import { useLazyLoadStaggered } from "../hooks/useLazyLoad";
 
@@ -180,7 +180,8 @@ function FloorPlans({ setIsModalShow  ,setIsModalTitle}: FloorPlansPropsType) {
                       <div className="hidden md:block">
                         <div className="w-[32px] h-[32px] sm:w-[40px] sm:h-[40px] md:w-[48px] md:h-[48px] lg:w-[48 px] lg:h-[48px]">
                         
-                        <Lock  />
+                        <StaticImage src="../assets/images/lock.svg" alt="Beseen Moonglade Lock Icon" />
+                        
                         </div>
                       </div>
                     </div>

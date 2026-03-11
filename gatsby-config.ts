@@ -79,10 +79,10 @@ const config: GatsbyConfig = {
     },
     {
       resolve: `gatsby-source-filesystem`,
-      options: {
-        name: `images`,
-        path: `${__dirname}/src/assets/images`,
-      },
+  options: {
+    name: `images`,
+    path: `${__dirname}/src/assets/images/`,
+  },
     },
     {
       resolve: `gatsby-source-filesystem`,
@@ -148,7 +148,7 @@ const config: GatsbyConfig = {
         icon_options: {
           purpose: `any maskable`,
         },
-        cache_busting_mode: `query`,
+        cache_busting_mode: `none`,
         include_favicon: true,
         legacy: true,
       },

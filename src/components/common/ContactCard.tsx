@@ -1,8 +1,7 @@
 import React, { useState, memo, useRef, useCallback, useEffect } from "react";
 import { navigate } from "gatsby";
 import { getCurrentContactFormConfig } from "../../config/contactFormConfig";
-
-const TURNSTILE_SITE_KEY = "0x4AAAAAAB4Bl0NJyxtMOFfz";
+import { TURNSTILE_SITE_KEY } from "../../config/turnstileConfig";
 
 interface ContactCardPropsType {
   setIsModalShow?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -36,6 +35,7 @@ function ContactCard({
 
   const formRef = useRef<HTMLFormElement>(null);
   const turnstileWidgetRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
 
   const [turnstileToken, setTurnstileToken] = useState("");
   const [isClient, setIsClient] = useState(false);
@@ -65,40 +65,78 @@ function ContactCard({
   useEffect(() => {
     if (!isClient) return;
 
-    const TURNSTILE_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js";
-    if (!(window as any).turnstile && !document.querySelector(`script[src="${TURNSTILE_SRC}"]`)) {
-      const script = document.createElement("script");
-      script.src = TURNSTILE_SRC;
-      script.async = true;
-      document.body.appendChild(script);
-    }
+    // Script is loaded globally via gatsby-browser.js
+    // Note: CSP warnings from "normal?lang=auto:1" are expected - they originate from
+    // inside Cloudflare's Turnstile iframe and cannot be eliminated from our end
+
+    const removeWidget = () => {
+      try {
+        if (widgetIdRef.current && (window as any).turnstile) {
+          (window as any).turnstile.remove(widgetIdRef.current);
+        }
+      } catch (_) {
+        // ignore removal errors
+      }
+      widgetIdRef.current = null;
+    };
 
     const renderWidget = () => {
-      if ((window as any).turnstile && turnstileWidgetRef.current) {
-        turnstileWidgetRef.current.innerHTML = "";
+      if (!(window as any).turnstile || !turnstileWidgetRef.current) return;
 
-        const widgetSize = window.innerWidth < 768 ? "compact" : "normal";
+      // Properly remove previous widget before re-rendering
+      removeWidget();
 
-        (window as any).turnstile.render(turnstileWidgetRef.current, {
+      const widgetSize = window.innerWidth < 768 ? "compact" : "normal";
+
+      try {
+        const id = (window as any).turnstile.render(turnstileWidgetRef.current, {
           sitekey: TURNSTILE_SITE_KEY,
           callback: (token: string) => {
             setTurnstileToken(token);
           },
           "expired-callback": () => setTurnstileToken(""),
+          "error-callback": (error: any) => {
+            console.error("Turnstile error:", error);
+            setTurnstileToken("");
+          },
           theme: "dark",
           size: widgetSize,
         });
+        widgetIdRef.current = id;
+      } catch (err) {
+        console.error("Turnstile render error:", err);
       }
     };
 
+    // Poll until turnstile is available (with 30s timeout)
+    let attempts = 0;
+    const maxAttempts = 75; // 75 * 400ms = 30 seconds
+    
     const interval = setInterval(() => {
+      attempts++;
       if ((window as any).turnstile) {
+        clearInterval(interval);
         renderWidget();
+      } else if (attempts >= maxAttempts) {
+        console.error('Turnstile script failed to load after 30 seconds');
         clearInterval(interval);
       }
     }, 400);
 
-    return () => clearInterval(interval);
+    // Debounced resize handler to avoid rapid re-renders
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(renderWidget, 300);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(resizeTimer);
+      window.removeEventListener("resize", handleResize);
+      removeWidget();
+    };
   }, [isClient]);
 
   const shouldShowEmail = useConfig
@@ -183,7 +221,11 @@ function ContactCard({
           setTimeout(() => {
             setFormData({ name: "", mobile: "", email: "", consent: false });
             setTurnstileToken("");
-            navigate("/thank-you");
+            // Reset the Turnstile widget for next use
+            if (widgetIdRef.current && (window as any).turnstile) {
+              (window as any).turnstile.reset(widgetIdRef.current);
+            }
+            navigate(`/thank-you?name=${encodeURIComponent(formData.name)}&phone=${encodeURIComponent(formData.mobile)}`);
           }, 1500);
         } else {
           setIsSuccess(false);
@@ -200,6 +242,7 @@ function ContactCard({
     [formData, turnstileToken, shouldShowEmail, utmData]
   );
 
+  if (!isClient) return null;
   return (
     <section className="w-[237px] md:w-[300px] lg:w-[320px] xl:w-[420px] bg-contactFormBG/70 rounded-xl shadow-lg p-6 sm:p-7 md:p-8 lg:p-8 backdrop-blur-lg">
       <form

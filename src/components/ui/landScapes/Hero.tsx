@@ -50,7 +50,7 @@ function Hero({ hideContactCard = false }: HeroProps) {
           alt="Moonglade landscapes and waterscapes in Kokapet, Hyderabad - Beautifully designed outdoor spaces and premium amenities"
           className="w-full h-full"
           loading="eager"
-          fetchPriority="high"
+        
           style={{ height: "100vh" }}
           objectFit="cover"
           objectPosition="center"

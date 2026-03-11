@@ -40,6 +40,7 @@ import Hero from "../components/Hero";
 import MainLayout from "../layout/MainLayout";
 import Features from "../components/Features";
 import InfraProjects from "../components/InfraProjects";
+import LazySection from "../components/LazySection";
 
 const EinfraIraProjectDes = React.lazy(
   () => import("../components/EinfraIraProjectDes")
@@ -73,56 +74,88 @@ const IndexPage: React.FC<PageProps> = () => {
   const [isShowModalTitle, setIsModalTitle] = React.useState(false);
 
   return (
-    <React.Suspense fallback={<div />}>
-      <MainLayout
-        setIsModalShow={setIsModalShow}
-        isModalShow={isModalShow}
-        setIsModalTitle={setIsModalTitle}
-        isShowModalTitle={isShowModalTitle}
-      >
-        <Hero setIsModalShow={setIsModalShow} isModalShow={isModalShow} />
-        
-        <section className="bg-[#FFF9F7]">
-          <EinfraIraProjectDes />
-        </section>
+    <MainLayout
+      setIsModalShow={setIsModalShow}
+      isModalShow={isModalShow}
+      setIsModalTitle={setIsModalTitle}
+      isShowModalTitle={isShowModalTitle}
+    >
+      <h1 style={{position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden'}}>
+        3 & 4 BHK Flats in Kokapet near Financial District, Hyderabad | Moonglade
+      </h1>
 
+      {/* Non-lazy — render eagerly so SSR and client agree on initial output */}
+      <Hero setIsModalShow={setIsModalShow} isModalShow={isModalShow} />
+
+      {/* Each lazy section uses LazySection which combines IntersectionObserver
+          + React.Suspense — the JS chunk only downloads when near viewport */}
+      <LazySection className="bg-[#FFF9F7]" minHeight="350px">
+        <EinfraIraProjectDes />
+      </LazySection>
+
+      <LazySection minHeight="450px">
         <InfoWalkthrough />
+      </LazySection>
 
+      <LazySection minHeight="450px">
         <Clubhouse />
-        <Features type="waterfront" list={waterfrontList} />
-        
+      </LazySection>
+
+      <Features type="waterfront" list={waterfrontList} />
+
+      <LazySection minHeight="150px">
         <DownloadBrochure
           setIsModalShow={setIsModalShow}
           setIsModalTitle={setIsModalTitle}
         />
-        <Features type="landscapes" list={landscapesList} />
+      </LazySection>
+
+      <Features type="landscapes" list={landscapesList} />
+
+      <LazySection minHeight="100px">
         <TailoredSpaceHeader />
+      </LazySection>
+
+      <LazySection minHeight="450px">
         <TailoredSpace />
+      </LazySection>
+
+      <LazySection minHeight="450px">
         <FloorPlans
           setIsModalShow={setIsModalShow}
           setIsModalTitle={setIsModalTitle}
         />
+      </LazySection>
+
+      <LazySection minHeight="100px">
         <SiteVisitBar
           setIsModalShow={setIsModalShow}
           setIsModalTitle={setIsModalTitle}
         />
-        <section className="bg-bgPrimary md:bg-bgSecondaryLight ">
-          <MoongladeLocality />
-        </section>
+      </LazySection>
 
+      <LazySection className="bg-bgPrimary md:bg-bgSecondaryLight" minHeight="450px">
+        <MoongladeLocality />
+      </LazySection>
+
+      <LazySection minHeight="350px">
         <PriceTable
           setIsModalShow={setIsModalShow}
           setIsModalTitle={setIsModalTitle}
         />
+      </LazySection>
 
+      <LazySection minHeight="350px">
         <DownloadBrochureWithForm />
-        
-        <section className="bg-bgSecondaryLight">
-          <InfraProjects />
+      </LazySection>
+
+      <section className="bg-bgSecondaryLight">
+        <InfraProjects />
+        <LazySection minHeight="350px">
           <FAQs />
-        </section>
-      </MainLayout>
-    </React.Suspense>
+        </LazySection>
+      </section>
+    </MainLayout>
   );
 };
 
@@ -133,28 +166,26 @@ export const Head: HeadFC = () => (
     <title>3 & 4 BHK Flats Kokapet near Financial District | ₹1.36Cr</title>
     <meta name="description" content="Moonglade - Premium 3 & 4 BHK apartments in Kokapet near Financial District, Hyderabad. 1400-3950 sqft from ₹1.33Cr. RERA approved. Book site visit today!" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      rel="preconnect"
-      href="https://fonts.gstatic.com"
-      crossOrigin="anonymous"
-    />
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-    
-    {/* Preload critical hero images */}
-    <link
-      rel="preload"
-      as="image"
-      href="/static/105f3cee5979e47c13130c0b75d8124e/d97f4/moonglade-hero.png"
-      media="(min-width: 640px)"
-    />
+    {/* <meta http-equiv="Content-Security-Policy"
+content="
+default-src 'self';
+script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://challenges.cloudflare.com;
+style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+font-src 'self' https://fonts.gstatic.com;
+img-src 'self' data: https:;
+connect-src 'self' https://www.google-analytics.com;
+frame-src https://challenges.cloudflare.com;
+">
+</meta>     */}
+    {/* gatsby-plugin-webfonts (gatsby-config.ts) self-hosts Prata locally as woff2.
+        No Google Fonts link tags needed — they would load the font a second time. */}
+
 
     <link rel="canonical" href="https://beseen.moonglade.life" />
 
    <meta property="og:title" content="Moonglade Kokapet | Luxury 3 & 4 BHK Apartments in Financial District" />
     <meta property="og:description" content=" Book your dream 3 & 4 BHK luxury flats at Moonglade, Kokapet Hyderabad. Premium amenities and quick connectivity to the Financial District." />
-    <meta property="og:image" content="https://beseen.moonglade.life/static/105f3cee5979e47c13130c0b75d8124e/d97f4/moonglade-hero.png" />
+    <meta property="og:image" content="https://beseen.moonglade.life/icons/icon-512x512.png" />
     
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Moonglade" />

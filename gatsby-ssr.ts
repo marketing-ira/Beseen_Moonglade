@@ -230,32 +230,21 @@ export const onRenderBody: GatsbySSR["onRenderBody"] = ({
 
 
 
-  setHeadComponents([
+  // Build head components array
+  const headComponents: React.ReactElement[] = [];
+
+  headComponents.push(
     React.createElement("script", {
       key: "gtm-head",
       dangerouslySetInnerHTML: { __html: gtmHead },
-    }),
+    })
+  );
 
+  headComponents.push(
     React.createElement("link", {
       key: "favicon",
       rel: "icon",
       href: "/favicon.svg",
-    }),
-
-    // Preload and defer-loading Cloudflare Turnstile to ensure challenge assets are used promptly
-    React.createElement("link", {
-      key: "turnstile-preload",
-      rel: "preload",
-      href: "https://challenges.cloudflare.com/turnstile/v0/api.js",
-      as: "script",
-      crossOrigin: "anonymous",
-    }),
-
-    React.createElement("script", {
-      key: "turnstile-script",
-      src: "https://challenges.cloudflare.com/turnstile/v0/api.js",
-      defer: true,
-      crossOrigin: "anonymous",
     }),
 
     React.createElement("meta", {
@@ -268,15 +257,20 @@ export const onRenderBody: GatsbySSR["onRenderBody"] = ({
       key: "jsonld",
       type: "application/ld+json",
       dangerouslySetInnerHTML: { __html: JSON.stringify(schemas) },
-    }),
-  ]);
+    })
+  );
+
+  setHeadComponents(headComponents);
 
 
 
-  setPreBodyComponents([
+  const preBody: React.ReactElement[] = [];
+  preBody.push(
     React.createElement("noscript", {
       key: "gtm-noscript",
       dangerouslySetInnerHTML: { __html: gtmNoScript },
-    }),
-  ]);
+    })
+  );
+
+  setPreBodyComponents(preBody);
 };

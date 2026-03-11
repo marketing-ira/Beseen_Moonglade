@@ -4,6 +4,7 @@ import Button from "./common/Button";
 import { NavLinks } from "../types/NavbarTypes";
 import NavLogo from "../assets/images/nav-logo.svg";
 import MobileMenu from "../assets/images/mobile-nav-icon.svg";
+import { StaticImage } from "gatsby-plugin-image";
 
 interface NavbarPropsType {
   setIsModalTitle: React.Dispatch<React.SetStateAction<boolean>>;
@@ -58,7 +59,8 @@ function Navbar({ setIsModalShow, setIsModalTitle, isMobileMenuOpen, setIsMobile
       <nav className="flex items-center justify-between h-full">
         <Link to="/" aria-label="Home">
           <div className="w-[118px] md:w-[237px]">
-            <NavLogo />
+            {/* <NavLogo /> */}
+            <StaticImage src="../assets/images/nav-logo.svg" alt="Beseen Moonglade" />
           </div>
         </Link>
 
@@ -100,7 +102,8 @@ function Navbar({ setIsModalShow, setIsModalTitle, isMobileMenuOpen, setIsMobile
       >
         <header className="flex justify-between items-center p-6 border-b">
           <div className="h-8">
-            <NavLogo />
+            {/* <NavLogo /> */}
+            <StaticImage src="../assets/images/nav-logo.svg" alt="Beseen Moonglade" />
           </div>
 
           <button onClick={closeMobileMenu} aria-label="Close">

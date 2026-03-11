@@ -1,5 +1,33 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/
 Disallow: /thank-you
 
+# Allow important AI crawlers (LLM indexing)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Allow major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
 Sitemap: https://beseen.moonglade.life/sitemap.xml

@@ -84,15 +84,12 @@
 }
 
 /* Image fade-in while loading */
-img {
-  &[loading="lazy"] {
-    @apply transition-opacity duration-300;
-    opacity: 0;
-
-    &.loaded {
-      opacity: 1;
-    }
-  }
+img[loading="lazy"] {
+  transition: opacity 0.3s;
+  opacity: 0;
+}
+img[loading="lazy"].loaded {
+  opacity: 1;
 }
 
 /* Native lazy loading support */

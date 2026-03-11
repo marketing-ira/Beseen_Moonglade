@@ -48,27 +48,25 @@ const Clubhouse = () => {
           </h3>
         </div>
       </div>
+      {/* Use GatsbyImage instead of CSS background-image so Gatsby serves AVIF/WebP
+          at the correct breakpoint instead of the raw PNG via publicURL */}
       {clubHouse?.childImageSharp ? (
-        <section
-          className="w-full h-[25vh] md:h-screen bg-contain md:bg-cover bg-center bg-no-repeat relative"
-          style={{
-            backgroundImage: `url(${clubHouse.publicURL})`,
-          }}
-        >
-          <div className="mx-auto px-4 py-5 sm:px-8 lg:px-[120px] md:py-8 lg:py-12  h-full">
-            <h3 className="font-['Prata'] text-[24px] leading-[30px] text-white md:text-[64px] md:leading-[60px] tracking-normal font-medium  drop-shadow-lg">
+        <section className="w-full h-[25vh] md:h-screen relative overflow-hidden">
+          <GatsbyImage
+            image={clubHouse.childImageSharp.gatsbyImageData}
+            alt="Modern clubhouse at Moonglade luxury apartments in Kokapet"
+            loading="lazy"
+            className="!absolute inset-0 w-full h-full"
+            imgStyle={{ objectFit: "cover", objectPosition: "center" }}
+          />
+          {/* Overlay content on top of the image */}
+          <div className="relative z-10 mx-auto px-4 py-5 sm:px-8 lg:px-[120px] md:py-8 lg:py-12 h-full">
+            <h3 className="font-['Prata'] text-[24px] leading-[30px] text-white md:text-[64px] md:leading-[60px] tracking-normal font-medium drop-shadow-lg">
               Clubhouse
             </h3>
           </div>
         </section>
-      ) : (
-        <GatsbyImage
-          image={clubHouse?.publicURL}
-          alt={"Modern clubhouse at Moonglade luxury apartments in Kokapet"}
-          className="w-full h-auto"
-          loading="lazy"
-        />
-      )}
+      ) : null}
 
       {/* Floors Section */}
 

@@ -1,3 +1,5 @@
+# Netlify configuration for Moonglade Gatsby site
+
 [build]
   publish = "public"
   command = "npm run build:netlify"
@@ -30,7 +32,30 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+[[headers]]
+  for = "*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.jpeg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
 # Security headers
+# Note: Browser console may show CSP warnings from "normal?lang=auto:1" - these originate
+# from inside Cloudflare's Turnstile iframe and are informational only. They cannot be
+# eliminated as they come from Cloudflare's servers, not from this site.
 [[headers]]
   for = "/*"
   [headers.values]
@@ -41,4 +66,4 @@
     # Allow third-party storage access for tracking and analytics
     Permissions-Policy = "storage-access=('self' 'https://www.googletagmanager.com' 'https://do8wl071qiuy9.cloudfront.net')"
     # Explicit Content Security Policy to avoid fallback warnings. Adjust sources as needed.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.segment.com https://www.googletagservices.com https://challenges.cloudflare.com; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://api.segment.io https://stats.g.doubleclick.net https://challenges.cloudflare.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdn.segment.com https://www.googletagservices.com https://challenges.cloudflare.com https://static.cloudflareinsights.com https://do8wl071qiuy9.cloudfront.net https://maps.googleapis.com; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://api.segment.io https://stats.g.doubleclick.net https://challenges.cloudflare.com https://irarealty.in; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src 'self' https://www.google.com https://maps.googleapis.com https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://irarealty.in"
