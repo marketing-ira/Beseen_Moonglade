@@ -15,7 +15,7 @@ const NavLinks : NavbarLinkType[] = [
     },
     {
         label:"Amenities",
-        url:"#amenities",
+        url:"amenities",
     },
     {
         label:"Plans",

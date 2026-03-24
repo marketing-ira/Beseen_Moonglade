@@ -8,12 +8,16 @@ interface ContactCardPropsType {
   showEmail?: boolean;
   useConfig?: boolean;
   isShowModalTitle?: boolean;
+  showBhkPreference?: boolean;
+  variant?: "default" | "hero";
+  submitLabel?: string;
 }
 
 interface FormFields {
   name: string;
   mobile: string;
   email: string;
+  bhkPreference: string;
   consent: boolean;
 }
 
@@ -22,11 +26,15 @@ function ContactCard({
   showEmail,
   useConfig,
   isShowModalTitle,
+  showBhkPreference = false,
+  variant = "default",
+  submitLabel,
 }: ContactCardPropsType) {
   const [formData, setFormData] = useState<FormFields>({
     name: "",
     mobile: "",
     email: "",
+    bhkPreference: "",
     consent: false,
   });
 
@@ -164,6 +172,7 @@ function ContactCard({
       if (
         !formData.name ||
         !formData.mobile ||
+        (showBhkPreference && !formData.bhkPreference) ||
         !formData.consent ||
         (shouldShowEmail && !formData.email)
       ) {
@@ -221,7 +230,7 @@ function ContactCard({
           setIsSuccess(true);
 
           setTimeout(() => {
-            setFormData({ name: "", mobile: "", email: "", consent: false });
+            setFormData({ name: "", mobile: "", email: "", bhkPreference: "", consent: false });
             setTurnstileToken("");
             // Reset the Turnstile widget for next use
             if (widgetIdRef.current && (window as any).turnstile) {
@@ -245,11 +254,37 @@ function ContactCard({
   );
 
   if (!isClient) return null;
+
+  const isHeroVariant = variant === "hero";
+  const containerClasses = isHeroVariant
+    ? "w-[300px] xl:w-[360px] bg-[#B88A73]/95 rounded-2xl shadow-[0_24px_80px_rgba(7,17,48,0.32)] p-5 xl:p-6"
+    : "w-[237px] md:w-[300px] lg:w-[320px] xl:w-[420px] bg-contactFormBG/70 rounded-xl shadow-lg p-6 sm:p-7 md:p-8 lg:p-8 backdrop-blur-lg";
+  const formClasses = isHeroVariant ? "flex flex-col gap-4" : "flex flex-col gap-6";
+  const labelClasses = isHeroVariant
+    ? "block text-white/95 font-['Poppins'] text-[12px] xl:text-[14px] mb-2"
+    : "block text-primaryTitleText font-['Prata'] text-[10.5px] md:text-[21px] mb-1";
+  const inputClasses = isHeroVariant
+    ? "w-full font-['Prata'] text-[14px] text-white placeholder:text-white/60 bg-transparent border-0 border-b border-white/50 focus:ring-0 focus:border-white pb-2 pl-0 outline-none"
+    : "w-full font-['Prata'] text-12px md:text-24px text-placeholderText bg-transparent border-0 border-b-2 border-bgPrimary focus:ring-0 focus:border-bgPrimary pb-1 md:pb-3 pl-1 outline-none";
+  const mobileInputClasses = isHeroVariant
+    ? "w-full font-['Prata'] text-[14px] text-white placeholder:text-white/60 bg-transparent border-0 border-b border-white/50 focus:ring-0 focus:border-white pb-2 pl-0 outline-none"
+    : "w-full font-['Prata'] text-14px md:text-24px text-placeholderText bg-transparent border-0 border-b-2 border-bgPrimary focus:ring-0 focus:border-bgPrimary pb-1 md:pb-3 pl-1 outline-none";
+  const consentLabelClasses = isHeroVariant
+    ? "font-['Prata'] text-[7px] xl:text-[8px] leading-[1.4] text-white/80"
+    : "font-['Prata'] text-[5px] md:text-[10px] text-primaryTitleText";
+  const submitButtonClasses = isHeroVariant
+    ? `font-['Prata'] text-white shadow-sm rounded-full text-[12px] xl:text-[14px] border border-white/60 px-6 py-2 mt-2 hover:bg-white/10 ${
+        isSubmitting ? "opacity-50 pointer-events-none" : ""
+      }`
+    : `font-['Prata'] text-primaryTitleText shadow-sm rounded-full text-[8px] md:text-[16px] lg:text-[18px] border-[0.58px] border-bgPrimary px-3 py-1 md:px-6 md:py-2 lg:px-8 lg:py-2 mt-2 md:mt-4 ${
+        isSubmitting ? "opacity-50 pointer-events-none" : ""
+      }`;
+
   return (
-    <section className="w-[237px] md:w-[300px] lg:w-[320px] xl:w-[420px] bg-contactFormBG/70 rounded-xl shadow-lg p-6 sm:p-7 md:p-8 lg:p-8 backdrop-blur-lg">
+    <section className={containerClasses}>
       <form
         ref={formRef}
-        className="flex flex-col gap-6"
+        className={formClasses}
         autoComplete="off"
         onSubmit={handleSubmit}
       >
@@ -267,7 +302,7 @@ function ContactCard({
         <div>
           <label
             htmlFor="name"
-            className="block text-primaryTitleText font-['Prata'] text-[10.5px] md:text-[21px] mb-1"
+            className={labelClasses}
           >
             Name:
           </label>
@@ -276,7 +311,8 @@ function ContactCard({
             type="text"
             value={formData.name}
             onChange={(e) => handleInputChange("name", e.target.value)}
-            className="w-full font-['Prata'] text-12px md:text-24px text-placeholderText bg-transparent border-0 border-b-2 border-bgPrimary focus:ring-0 focus:border-bgPrimary pb-1 md:pb-3 pl-1 outline-none"
+            className={inputClasses}
+            placeholder={isHeroVariant ? "Sushma Sethupathi" : undefined}
             required
           />
         </div>
@@ -285,7 +321,7 @@ function ContactCard({
           <div>
             <label
               htmlFor="email"
-              className="block text-primaryTitleText font-['Prata'] text-[10.5px] md:text-[21px] mb-1"
+              className={labelClasses}
             >
               Email ID:
             </label>
@@ -294,7 +330,7 @@ function ContactCard({
               type="email"
               value={formData.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
-              className="w-full font-['Prata'] text-12px md:text-24px text-placeholderText bg-transparent border-0 border-b-2 border-bgPrimary focus:ring-0 focus:border-bgPrimary pb-1 md:pb-3 pl-1 outline-none"
+              className={inputClasses}
               required
             />
           </div>
@@ -303,7 +339,7 @@ function ContactCard({
         <div>
           <label
             htmlFor="mobile"
-            className="block text-primaryTitleText font-['Prata'] text-[10.5px] md:text-[21px] mb-1"
+            className={labelClasses}
           >
             Mobile Number:
           </label>
@@ -312,24 +348,53 @@ function ContactCard({
             type="tel"
             value={formData.mobile}
             onChange={(e) => handleInputChange("mobile", e.target.value)}
-            className="w-full font-['Prata'] text-14px md:text-24px text-placeholderText bg-transparent border-0 border-b-2 border-bgPrimary focus:ring-0 focus:border-bgPrimary pb-1 md:pb-3 pl-1 outline-none"
+            className={mobileInputClasses}
+            placeholder={isHeroVariant ? "+91 7853218970" : undefined}
             required
             pattern="[0-9+\- ]{10,15}"
           />
         </div>
 
-        <div className="flex gap-3 items-start">
+        {showBhkPreference && (
+          <div>
+            <label
+              htmlFor="bhkPreference"
+              className={labelClasses}
+            >
+              Prefer BHK
+            </label>
+            <select
+              id="bhkPreference"
+              value={formData.bhkPreference}
+              onChange={(e) => handleInputChange("bhkPreference", e.target.value)}
+              className={inputClasses}
+              required
+            >
+              <option value="" disabled className="text-slate-900">
+                Select BHK
+              </option>
+              <option value="3 BHK" className="text-slate-900">
+                3 BHK
+              </option>
+              <option value="4 BHK" className="text-slate-900">
+                4 BHK
+              </option>
+            </select>
+          </div>
+        )}
+
+        <div className="flex items-start gap-3">
           <input
             id="consent"
             type="checkbox"
             checked={formData.consent}
             onChange={(e) => handleInputChange("consent", e.target.checked)}
-            className="mt-1 bg-transparent rounded border border-bgPrimary"
+            className={isHeroVariant ? "mt-1 h-3.5 w-3.5 bg-transparent rounded border border-white/60" : "mt-1 bg-transparent rounded border border-bgPrimary"}
             required
           />
           <label
             htmlFor="consent"
-            className="font-['Prata'] text-[5px] md:text-[10px] text-primaryTitleText"
+            className={consentLabelClasses}
           >
             I authorize representatives of Moonglade to call, SMS, Email, or
             WhatsApp me about its products and offers. This consent overrides
@@ -337,10 +402,10 @@ function ContactCard({
           </label>
         </div>
 
-        <div className="mt-4 w-full flex justify-center overflow-hidden">
+        <div className={isHeroVariant ? "w-full flex justify-center overflow-hidden" : "mt-4 w-full flex justify-center overflow-hidden"}>
           <div
             ref={turnstileWidgetRef}
-            className="turnstile-widget w-full max-w-[280px] md:max-w-[320px] scale-95 md:scale-100 origin-top"
+            className={isHeroVariant ? "turnstile-widget w-full max-w-[280px] scale-[0.86] origin-top" : "turnstile-widget w-full max-w-[280px] md:max-w-[320px] scale-95 md:scale-100 origin-top"}
             style={{ minHeight: 65 }}
           />
         </div>
@@ -349,11 +414,9 @@ function ContactCard({
           type="submit"
           disabled={isSubmitting}
           aria-busy={isSubmitting}
-          className={`font-['Prata'] text-primaryTitleText shadow-sm rounded-full text-[8px] md:text-[16px] lg:text-[18px] border-[0.58px] border-bgPrimary px-3 py-1 md:px-6 md:py-2 lg:px-8 lg:py-2 mt-2 md:mt-4 ${
-            isSubmitting ? "opacity-50 pointer-events-none" : ""
-          }`}
+          className={submitButtonClasses}
         >
-          {isShowModalTitle ? "Book Your Private Tour" : "Submit"}
+          {submitLabel ?? (isShowModalTitle ? "Book Your Private Tour" : "Submit")}
         </button>
 
         {apiMessage && (

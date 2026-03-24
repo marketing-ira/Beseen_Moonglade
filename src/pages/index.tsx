@@ -99,6 +99,10 @@ const IndexPage: React.FC<PageProps> = () => {
         <EinfraIraProjectDes />
       </LazySection>
 
+      <LazySection>
+        <EinfraIraStats />
+      </LazySection>
+
       <LazySection minHeight="450px">
         <InfoWalkthrough />
       </LazySection>
