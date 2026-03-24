@@ -5,6 +5,7 @@ interface LazyImageProps extends Omit<GatsbyImageProps, "image"> {
   image: any;
   placeholderClassName?: string;
   animationDuration?: number;
+  imageClassName?: string;
 }
 
 /**
@@ -21,6 +22,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
   placeholderClassName = "lazy-placeholder",
   animationDuration = 300,
   className = "",
+  imageClassName = "",
   ...props
 }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -65,7 +67,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
           image={image}
           loading="lazy"
           {...props}
-          className={`${props.className || ""} lazy-fade-in`}
+          className={`${imageClassName} lazy-fade-in`.trim()}
         />
       )}
       {!isVisible && (

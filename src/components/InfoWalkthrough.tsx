@@ -4,6 +4,30 @@ import { GatsbyImage, getImage, StaticImage } from "gatsby-plugin-image";
 
 import PlayIcon from "../assets/images/play-icon.svg";
 
+type DetailCardProps = {
+  icon: React.ReactNode;
+  title: string;
+  description: React.ReactNode;
+};
+
+const DetailCard = ({ icon, title, description }: DetailCardProps) => {
+  return (
+    <div className="flex min-h-[92px] items-start gap-3 border border-[#D9D9D9] border-opacity-1 px-3 py-4 sm:min-h-[108px] sm:gap-4 sm:px-4 lg:min-h-[100px] lg:px-5">
+      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center sm:h-12 sm:w-12">
+        {icon}
+      </div>
+      <div className="space-y-1 sm:space-y-1.5">
+        <h4 className="font-['Prata'] text-[11px] font-normal leading-[1.2] text-secondaryText sm:text-[14px] lg:text-[18px]">
+          {title}
+        </h4>
+        <div className="font-['Poppins'] text-[12px] leading-[1.35] text-[#202020] sm:text-[14px] lg:text-[16px] font-light">
+          {description}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const InfoWalkthrough = () => {
   const [isVideoModalShow, setIsVideoModalShow] = useState(false);
 
@@ -51,13 +75,8 @@ const InfoWalkthrough = () => {
     (node: any) => node.relativePath === "moonGlade/walkthrough.png"
   );
 
-  const iconClass =
-    "w-[28px] h-[28px] sm:w-[45px] sm:h-[45px]  text-[#181B20] opacity-100";
-
   return (
     <>
-      {/* Decorative background removed — it was loading the full raw PNG via publicURL
-          at only 6% opacity (visually imperceptible), costing a full image download */}
       <section className="relative py-10 lg:py-[101px] px-4 sm:px-8 lg:px-[120px] overflow-hidden">
         {featureGradient && (
           <img
@@ -71,181 +90,139 @@ const InfoWalkthrough = () => {
           />
         )}
 
-        <div className="relative grid gap-8 lg:gap-0 lg:grid-cols-12 lg:items-stretch lg:h-auto">
-          <div className="lg:col-span-7 flex flex-col lg:pr-8">
-            <div className="mb-8 lg:mb-8">
-              <h2 className="font-['Prata'] font-medium text-[24px] leading-[30px] sm:text-[40px] lg:text-[38px] tracking-normal lg:leading-[45px]">
-              Be seen at a place that the city will admire.
-                <span className="md:text-secondaryText"> Moonglade </span>
-                at Kokapet
+        <div className="relative mx-auto grid max-w-[1280px] gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)] lg:items-start lg:gap-9 xl:gap-12">
+          <div>
+            <div className="">
+              <h2 className="font-['Prata'] max-w-[580px] text-[30px] font-normal leading-[1.04] tracking-[-0.03em] text-[#202020] sm:text-[40px] lg:text-[42px] lg:leading-[1.02]">
+                Be Seen at a Place That the City Will Admire
+                <span className="text-[#8D8D8D]"> - </span>
+                Moonglade at Kokapet
               </h2>
 
-              <h3 className="font-['Prata'] text-[12px] sm:text-[14px] lg:text-[18px] font-normal mt-4 lg:mt-10  tracking-wide">
-              Experience the exceptional at Moonglade, Kokapet, a commune with 3 BHK and 4BHK luxury apartments. It’s designed for modern families who have a penchant for everything superior.
-              </h3>
+              <p className="mt-5 max-w-[640px] font-poppins font-light text-[14px] leading-[1.65] text-[#4A4A4A] sm:text-[16px] lg:mt-8 lg:text-[16px]">
+                Experience the exceptional at Moonglade, Kokapet, a
+                <b className="font-semibold"> RERA-approved gated community in Kokapet, Hyderabad</b>,
+                featuring 3 BHK and 4 BHK <b className="font-semibold"> luxury high-rise apartments in Kokapet</b>.
+                Designed for modern families with a penchant for superior living, this is where comfort meets style.
+              </p>
             </div>
 
-            <div className="bg-transparent grid grid-cols-2 flex-1">
-              <div className="flex flex-col">
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
-                  {/* <Location className={iconClass} /> */}
-                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center ">
-                    <StaticImage src="../assets/images/moonGlade/location.svg" alt="Beseen Moonglade Location Icon" className="w-[32px]" />
-
-                  </div>
-
-                  <div>
-                    <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
-                      Location
-                    </h4>
-                    <h4 className="font-['Prata'] text-[14px] sm:text-[18px] font-normal leading-normal tracking-normal">
-                      Kokapet, Opp. Exit 18A
-                    </h4>
-                  </div>
-                </div>
-
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
-                  {/* <Units className={iconClass} /> */}
-                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center ">
-                    <StaticImage src="../assets/images/moonGlade/units.svg" alt="Beseen Moonglade Units Icon" className="w-[32px]" />
-                  </div>
-
-                  <div>
-                    <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
-                      Units
-                    </h4>
-                    <h4 className="font-['Prata'] text-[14px] sm:text-[18px] font-normal leading-normal tracking-normal">
-                      2489 Apartments
-                    </h4>
-                  </div>
-                </div>
-
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
-                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center ">
-                    <StaticImage src="../assets/images/moonGlade/clubhouse.svg" alt="Beseen Moonglade Clubhouse Icon" className="w-[32px]" />
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
-                      Clubhouse
-                    </h4>
-                    <h4 className="font-['Prata'] text-[14px] sm:text-[18px] font-normal leading-normal tracking-normal">
-                      'Starlight' – 135,000 sq. ft.
-                    </h4>
-                  </div>
-                </div>
-
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
-                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center ">
-                    <StaticImage src="../assets/images/moonGlade/pricing.svg" alt="Beseen Moonglade Pricing Icon" className="w-[32px]" />
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
-                      Pricing
-                    </h4>
-                    <h4 className="font-['Prata'] text-[14px] sm:text-[18px] font-normal leading-normal tracking-normal">
-                      Starting at ₹1.4 Cr*
-                    </h4>
-                  </div>
-                </div>
-              </div>
-
-              {/* Column 2 */}
-              <div className="flex flex-col">
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
-                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center">
-                    <StaticImage src="../assets/images/moonGlade/arrow.svg" alt="Beseen Moonglade Area Icon" className="w-[32px]" />
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
-                      Area
-                    </h4>
-                    <h4 className="font-['Prata'] text-[14px] sm:text-[18px] font-normal leading-normal tracking-normal">
-                      14 Acres
-                    </h4>
-                  </div>
-                </div>
-
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
-                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center ">
-                    <StaticImage src="../assets/images/moonGlade/size.svg" alt="Beseen Moonglade Size Icon" className="w-[32px]" />
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
-                      Apartment Sizes
-                    </h4>
-                    <h4 className="font-['Prata'] text-[14px] sm:text-[18px] font-normal leading-normal tracking-normal">
-                      1400–3950 sq. ft.
-                    </h4>
-                  </div>
-                </div>
-
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
-                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center ">
-                    <StaticImage src="../assets/images/moonGlade/structure.svg" alt="Beseen Moonglade Structure Icon" className="w-[32px]" />
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
-                      Structure
-                    </h4>
-                    <h4 className="font-['Prata'] text-[14px] sm:text-[18px] font-normal leading-normal tracking-normal">
-                      2 Basements + Stilt + 4 Podium Levels + 40 Floors
-                    </h4>
-                  </div>
-                </div>
-
-                <div className="flex items-center py-4 pl-[8px] gap-2 border-[0.4px] border-[#D9D9D9] flex-1 min-h-[80px] overflow-visible">
-                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center ">
-                    <StaticImage src="../assets/images/moonGlade/towers.svg" alt="Beseen Moonglade Towers Icon" className="w-[32px]" />
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-['Prata'] text-secondaryText font-bold text-[8px] sm:text-[12px]">
-                      Towers
-                    </h4>
-                    <h4 className="font-['Prata'] text-[14px] sm:text-[18px] font-normal leading-normal tracking-normal">
-                      7
-                    </h4>
-                  </div>
-                </div>
-              </div>
+            <div className="mt-8 grid grid-cols-1 border border-opacity-5 border-[#D9D9D9] sm:mt-10 sm:grid-cols-2 lg:mt-12">
+              <DetailCard
+                icon={<StaticImage src="../assets/images/moonGlade/location.svg" alt="Beseen Moonglade Location Icon" className="w-[28px] sm:w-[36px]" />}
+                title="Location"
+                description={
+                  <>
+                    Kokapet, Opp. Exit 18A,
+                    <br />
+                    close to <b className="font-semibold">Outer Ring Road (ORR)</b>
+                  </>
+                }
+              />
+              <DetailCard
+                icon={<StaticImage src="../assets/images/moonGlade/arrow.svg" alt="Beseen Moonglade Area Icon" className="w-[28px] sm:w-[36px]" />}
+                title="Area"
+                description={
+                  <>
+                    14 Acres, <b className="font-semibold">high-rise</b>
+                    <br />
+                    <b className="font-semibold">gated community</b>
+                  </>
+                }
+              />
+              <DetailCard
+                icon={<StaticImage src="../assets/images/moonGlade/units.svg" alt="Beseen Moonglade Units Icon" className="w-[28px] sm:w-[36px]" />}
+                title="Units"
+                description={
+                  <>
+                    2489 <b className="font-semibold">RERA-approved flats</b>
+                    <br />
+                    <b className="font-semibold">Kokapet</b>
+                  </>
+                }
+              />
+              <DetailCard
+                icon={<StaticImage src="../assets/images/moonGlade/size.svg" alt="Beseen Moonglade Size Icon" className="w-[28px] sm:w-[36px]" />}
+                title="Apartment Sizes"
+                description={
+                  <>
+                    1400-3950 sq. ft.
+                    <br />
+                    <b className="font-semibold">luxury apartments</b>
+                  </>
+                }
+              />
+              <DetailCard
+                icon={<StaticImage src="../assets/images/moonGlade/clubhouse.svg" alt="Beseen Moonglade Clubhouse Icon" className="w-[28px] sm:w-[36px]" />}
+                title="Clubhouse"
+                description={
+                  <>
+                    135,000 sq. ft. of <b className="font-semibold">gated</b>
+                    <br />
+                    <b className="font-semibold">community luxury homes</b> amenities
+                  </>
+                }
+              />
+              <DetailCard
+                icon={<StaticImage src="../assets/images/moonGlade/structure.svg" alt="Beseen Moonglade Structure Icon" className="w-[28px] sm:w-[36px]" />}
+                title="Structure"
+                description={
+                  <>
+                    2 Basements + Stilt + 4
+                    <br />
+                    Podium Levels + 40 Floors
+                  </>
+                }
+              />
+              <DetailCard
+                icon={<StaticImage src="../assets/images/moonGlade/pricing.svg" alt="Beseen Moonglade Pricing Icon" className="w-[28px] sm:w-[36px]" />}
+                title="Pricing"
+                description={
+                  <>
+                    Starting at ₹1.4 Cr* for a
+                    <br />
+                   <b className="font-semibold">3 BHK flat 1400 sqft Hyderabad</b>  & a 
+                    <b className="font-semibold">4 BHK flat 3500 sqft Hyderabad</b>
+                  </>
+                }
+              />
+              <DetailCard
+                icon={<StaticImage src="../assets/images/moonGlade/towers.svg" alt="Beseen Moonglade Towers Icon" className="w-[28px] sm:w-[36px]" />}
+                title="Towers"
+                description={<b className="font-semibold">7</b>}
+              />
             </div>
           </div>
 
-          {/* Right Content: Image and video */}
-          <div className="lg:col-span-5 w-full flex flex-col">
-            <div className="border border-gray-200 shadow-sm overflow-hidden h-full flex flex-col">
+          <div className="w-full">
+            <div className="overflow-hidden border border-[#D9D9D9] bg-white shadow-[0_20px_50px_rgba(0,0,0,0.05)]">
               {featureGradient?.childImageSharp ? (
                 <GatsbyImage
                   image={getImage((featureGradient as any).childImageSharp)!}
                   alt={"Moonglade Towers"}
                   loading="eager"
-                  className="w-full flex-1 object-cover"
+                  className="h-full w-full object-cover"
                 />
               ) : featureGradient ? (
                 <img
                   src={featureGradient.publicURL}
                   alt="Moonglade Towers walkthrough image"
-                  className="w-full flex-1 object-cover"
+                  className="h-full w-full object-cover"
                   loading="lazy"
                   decoding="async"
                 />
               ) : (
-                <div className="w-full bg-gray-100 flex-1" />
+                <div className="aspect-[1.06/1] w-full bg-gray-100" />
               )}
               <button
                 onClick={() => setIsVideoModalShow(true)}
                 type="button"
                 aria-label="Play walkthrough video"
-                className="bg-secondaryText text-white w-full py-4 lg:py-[26px] flex items-center justify-center gap-2 sm:gap-7 px-6 lg:px-10"
+                className="flex w-full items-center justify-center gap-3 bg-secondaryText px-5 py-4 text-white sm:gap-5 sm:px-8 sm:py-5 lg:justify-start lg:px-12 lg:py-6"
               >
-                <PlayIcon className="w-[14px] h-[14px] sm:w-[69px] sm:h-[69px]" />
-                <span className="font-['Prata'] text-[8px] sm:text-[19px]">
-                  Click To View The Walkthrough Video.
+                <PlayIcon className="h-[36px] w-[36px] sm:h-[52px] sm:w-[52px] lg:h-[64px] lg:w-[64px]" />
+                <span className="font-['Poppins'] text-[13px] leading-none sm:text-[16px] lg:text-[20px]">
+                  Click to View the Walkthrough Video
                 </span>
               </button>
             </div>

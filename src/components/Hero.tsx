@@ -74,8 +74,7 @@ function Hero({ setIsModalShow, isModalShow }: HeroProps) {
         {/* Download Brochure Button - Top Right */}
         <button
           onClick={() => setIsBrochureModalOpen(true)}
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 sm:bottom-auto sm:left-auto sm:translate-x-0 sm:top-6 sm:right-6 md:top-1/2 md:-translate-y-1/2 md:right-8 z-10 text-white rounded-full shadow-lg hover:bg-[#16a6df] transition-colors
-          font-['Prata'] inline-flex items-center justify-center text-white bg-[#16a6df] px-6 sm:px-8 lg:px-6 py-3 sm:py-4 text-[12px] sm:text-[16px] lg:text-[18px] shadow-sm"
+          className="absolute bottom-0 left-1/2 z-10 inline-flex -translate-x-1/2 items-center justify-center rounded-full bg-[#16a6df] px-6 py-3 font-['Prata'] text-[12px] text-white shadow-lg transition-colors hover:bg-[#16a6df] sm:bottom-auto sm:left-auto sm:right-6 sm:top-6 sm:translate-x-0 sm:px-8 sm:py-4 sm:text-[16px] md:right-8 md:top-1/2 md:-translate-y-1/2 lg:px-6 lg:text-[18px]"
           aria-label="Download Brochure"
         >
           Download Brochure
@@ -88,7 +87,6 @@ function Hero({ setIsModalShow, isModalShow }: HeroProps) {
               image={desktopImage}
               alt="Moonglade luxury apartments in Kokapet, Hyderabad - Premium 3 & 4 BHK flats near Financial District"
               loading="eager"
-              fetchPriority="high"
               className="w-full h-auto"
               imgStyle={{
                 objectFit: "contain",
@@ -106,7 +104,6 @@ function Hero({ setIsModalShow, isModalShow }: HeroProps) {
               image={(mobileImage || desktopImage)!}
               alt="Moonglade luxury apartments in Kokapet, Hyderabad - Premium 3 & 4 BHK flats near Financial District"
               loading="eager"
-              fetchPriority="high"
               className="w-full"
               style={{ maxHeight: "100vh" }}
               imgStyle={{ objectFit: "cover" }}

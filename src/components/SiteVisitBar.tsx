@@ -8,11 +8,11 @@ function SiteVisitBar({
   setIsModalTitle,
 }: SiteVisitBarPropsType) {
   return (
-    <section className="bg-gradient-to-r from-bgGradientLeft to-bgGradientRight   ">
+    <section className="bg-gradient-to-r from-bgGradientLeft to-bgGradientRight ">
       <div className="px-4 sm:px-[120px] py-5 sm:py-6 lg:py-8">
-        <div className="flex justify-between items-center">
-          <h3 className="font-['Prata'] sm:font-medium sm:text-[36px] sm:leading-[60px] text-primaryText capitalize  font-normal text-[14px] leading-[30px]  ">
-            Model Flat Is Ready
+        <div className="flex items-center justify-between">
+          <h3 className="font-['Prata'] sm:font-medium sm:text-[28px]  sm:leading-[60px] text-primaryText capitalize  font-normal text-[14px] leading-[30px]  ">
+            Walk Through Your Future Home Today — Model Flat Now Open.
           </h3>
 
           <div className="">

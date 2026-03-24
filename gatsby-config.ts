@@ -44,27 +44,6 @@ const config: GatsbyConfig = {
     },
     `gatsby-transformer-sharp`,
     {
-      resolve: `gatsby-plugin-webfonts`,
-      options: {
-        fonts: {
-          google: [
-            {
-              family: "Poppins",
-              variants: ["300", "400", "500", "600", "700"],
-            },
-            {
-              family: "Prata",
-              variants: ["300", "400", "500", "600", "700"],
-            },
-          ],
-        },
-        formats: ["woff2"],
-        useMinify: true,
-        usePreload: true,
-        usePreconnect: true,
-      },
-    },
-    {
       resolve: 'gatsby-plugin-react-svg',
       options: {
         rule: {

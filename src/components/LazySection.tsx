@@ -28,6 +28,12 @@ const LazySection: React.FC<LazySectionProps> = ({
   rootMargin = "300px",
   minHeight = "100px",
 }) => {
+  const [hasMounted, setHasMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
   // Memoize so the object reference stays stable across renders.
   // useLazyLoad depends on [options] — a new object every render would
   // cause the IntersectionObserver to be torn down and re-created each time.
@@ -36,14 +42,15 @@ const LazySection: React.FC<LazySectionProps> = ({
     [rootMargin]
   );
   const [ref, isVisible] = useLazyLoad(options);
+  const shouldRenderChildren = hasMounted && isVisible;
 
   return (
     <div
       ref={ref as React.RefObject<HTMLDivElement>}
       className={className}
-      style={!isVisible ? { minHeight } : undefined}
+      style={!shouldRenderChildren ? { minHeight } : undefined}
     >
-      {isVisible && (
+      {shouldRenderChildren && (
         <React.Suspense fallback={<div style={{ minHeight }} />}>
           {children}
         </React.Suspense>

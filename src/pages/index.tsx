@@ -45,6 +45,9 @@ import LazySection from "../components/LazySection";
 const EinfraIraProjectDes = React.lazy(
   () => import("../components/EinfraIraProjectDes")
 );
+const EinfraIraStats = React.lazy(
+  () => import("../components/EinfraIraStats")
+);
 const InfoWalkthrough = React.lazy(
   () => import("../components/InfoWalkthrough")
 );
@@ -53,6 +56,9 @@ const TailoredSpaceHeader = React.lazy(
   () => import("../components/TailoredSpaceHeader")
 );
 const TailoredSpace = React.lazy(() => import("../components/TailoredSpace"));
+const HomeInsideImages = React.lazy(
+  () => import("../components/HomeInsideImages")
+);
 const FloorPlans = React.lazy(() => import("../components/FloorPlans"));
 const MoongladeLocality = React.lazy(
   () => import("../components/MoongladeLocality")
@@ -119,7 +125,7 @@ const IndexPage: React.FC<PageProps> = () => {
       <LazySection minHeight="450px">
         <TailoredSpace />
       </LazySection>
-
+   
       <LazySection minHeight="450px">
         <FloorPlans
           setIsModalShow={setIsModalShow}
@@ -133,10 +139,16 @@ const IndexPage: React.FC<PageProps> = () => {
           setIsModalTitle={setIsModalTitle}
         />
       </LazySection>
+          <LazySection minHeight="450px">
+        <HomeInsideImages />
+      </LazySection>
 
       <LazySection className="bg-bgPrimary md:bg-bgSecondaryLight" minHeight="450px">
         <MoongladeLocality />
       </LazySection>
+
+     
+
 
       <LazySection minHeight="350px">
         <PriceTable
@@ -177,8 +189,7 @@ connect-src 'self' https://www.google-analytics.com;
 frame-src https://challenges.cloudflare.com;
 ">
 </meta>     */}
-    {/* gatsby-plugin-webfonts (gatsby-config.ts) self-hosts Prata locally as woff2.
-        No Google Fonts link tags needed — they would load the font a second time. */}
+    {/* Fonts are loaded from gatsby-ssr.ts to keep SSR and client output aligned. */}
 
 
     <link rel="canonical" href="https://beseen.moonglade.life" />

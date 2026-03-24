@@ -242,6 +242,25 @@ export const onRenderBody: GatsbySSR["onRenderBody"] = ({
 
   headComponents.push(
     React.createElement("link", {
+      key: "fonts-preconnect-google",
+      rel: "preconnect",
+      href: "https://fonts.googleapis.com",
+    }),
+
+    React.createElement("link", {
+      key: "fonts-preconnect-gstatic",
+      rel: "preconnect",
+      href: "https://fonts.gstatic.com",
+      crossOrigin: "anonymous",
+    }),
+
+    React.createElement("link", {
+      key: "fonts-stylesheet",
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Prata&display=swap",
+    }),
+
+    React.createElement("link", {
       key: "favicon",
       rel: "icon",
       href: "/favicon.svg",

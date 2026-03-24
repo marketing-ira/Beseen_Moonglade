@@ -87,6 +87,23 @@ body {
   background-repeat: no-repeat;
 }
 
+.features-slider .slick-list {
+  overflow: hidden;
+}
+
+.features-slider .slick-track {
+  display: flex;
+  align-items: flex-start;
+}
+
+.features-slider .slick-slide {
+  height: inherit;
+}
+
+.features-slider .slick-slide > div {
+  height: 100%;
+}
+
 /* 
 .turnstile-widget iframe {
   max-width: 100% !important;

@@ -14,12 +14,16 @@ const REGISTERED_HOSTNAMES = [
   "beseen.moonglade.life",
 ];
 
-// Runtime check: use prod key only for domains registered in Cloudflare dashboard.
-// Any other hostname (localhost, other preview URLs) gets the always-passing test key.
-const isRegisteredDomain =
-  typeof window !== "undefined" &&
-  REGISTERED_HOSTNAMES.includes(window.location.hostname);
+export const getTurnstileSiteKey = (hostname?: string) => {
+  if (!hostname) {
+    return TURNSTILE_TEST_KEY;
+  }
 
-export const TURNSTILE_SITE_KEY = isRegisteredDomain
-  ? TURNSTILE_PROD_KEY
-  : TURNSTILE_TEST_KEY;
+  return REGISTERED_HOSTNAMES.includes(hostname)
+    ? TURNSTILE_PROD_KEY
+    : TURNSTILE_TEST_KEY;
+};
+
+export const TURNSTILE_SITE_KEY = getTurnstileSiteKey(
+  typeof window !== "undefined" ? window.location.hostname : undefined
+);

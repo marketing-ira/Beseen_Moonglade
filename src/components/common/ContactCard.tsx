@@ -47,10 +47,12 @@ function ContactCard({
     utm_medium: "",
     utm_campaign: "",
   });
+  const [pathname, setPathname] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
+      setPathname(window.location.pathname);
 
       setUtmData({
         utm_source: params.get("utm_source") || "",
@@ -140,7 +142,7 @@ function ContactCard({
   }, [isClient]);
 
   const shouldShowEmail = useConfig
-    ? getCurrentContactFormConfig().showEmail
+    ? getCurrentContactFormConfig(pathname ?? undefined).showEmail
     : showEmail;
 
   const handleInputChange = useCallback(

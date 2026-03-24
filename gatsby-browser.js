@@ -1,5 +1,6 @@
 import './src/styles/global.css'
 import './src/styles/lazyLoading.css'
+import 'slick-carousel/slick/slick.css'
 
 export const onClientEntry = () => {
   if (typeof window === 'undefined') return;

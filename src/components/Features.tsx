@@ -1,11 +1,16 @@
 import { graphql, useStaticQuery, navigate } from "gatsby";
-import { GatsbyImage, getImage } from "gatsby-plugin-image";
+import { GatsbyImage, getImage, IGatsbyImageData, StaticImage } from "gatsby-plugin-image";
 import React from "react";
+import { IoChevronBack, IoChevronForward } from "react-icons/io5";
+import Slider, { Settings } from "react-slick";
 
 interface FileNode {
   relativePath: string;
-  publicURL: string;
-  childImageSharp?: any;
+  publicURL?: string | null;
+  childImageSharp?: {
+    backgroundImage?: IGatsbyImageData;
+    cardImage?: IGatsbyImageData;
+  } | null;
 }
 
 interface FeaturesProps {
@@ -13,26 +18,104 @@ interface FeaturesProps {
   list: string[];
 }
 
+interface FeatureCard {
+  label: string;
+  icon: React.ReactNode;
+}
+
+const normalizeLabel = (label: string) =>
+  label
+    .toLowerCase()
+    .replace(/[’']/g, "")
+    .replace(/&/g, " and ")
+    .replace(/\//g, " ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+
+type FeatureIconRenderer = () => React.ReactNode;
+
+const FEATURE_ICON_CLASSNAME = "h-[34px] w-[34px] sm:h-[40px] sm:w-[40px] lg:h-[44px] lg:w-[44px]";
+
+const FALLBACK_ICON: FeatureIconRenderer = () => (
+  <StaticImage
+    src="../assets/images/clubhouse/Waterfront-icons/Skating-Rink.svg"
+    alt=""
+    aria-hidden="true"
+    className={FEATURE_ICON_CLASSNAME}
+  />
+);
+
+const FEATURE_ICON_BY_TYPE: Record<FeaturesProps["type"], Record<string, FeatureIconRenderer>> = {
+  waterfront: {
+    "aquatic pool": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Aquatic-Pool.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "bird feeding lawn": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Bird-Feeding.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "bubbling waters": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Bubbling-Waters.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "camping space": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Camping-Space.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "cricket pitch": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Cricket-Pitch.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "elevated walkway": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Elevated-Walkway.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "forest trail": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Forest-Trail.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "outdoor gymnasium": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Outdoor-Gymnasium.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "reflecting waters": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Reflecting-Waters.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "senior citizen park": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Senior-Citizen-Park.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "skating ring": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Skating-Rink.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "skating rink": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Skating-Rink.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "sun deck": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Sun-Deck.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "swing set": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Swing-Set.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "tree house": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Tree-House.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "zen zone": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Zen-Zone.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+  },
+  landscapes: {
+    "barbecue food area": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/BarbecueFood-Area.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "childrens play area": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Childrens-Play-Area.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "cycling track": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Cycling-Track.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "entrance canopy": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Entrance-Canopy.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "iconic sculpture": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Iconic-Sculpture.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "kiosk dining": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Kios-Dining.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "meadow lawn": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Meadow-Lawn.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "mini amphitheater": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Mini-Amphitheater.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "outdoor dining": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Outdoor-Dining.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "oxygen valley": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Oxygen-Valley.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "pergola seating": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Pergola-Seating.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "powder room": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Powder-Room.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "sculpture garden": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Sculpture-Garden.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "sun lawn yoga lawn": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/SunLawn-YogaLawn.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "water bridge": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Water-Bridge.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+  },
+};
+
+const SECTION_CONFIG = {
+  waterfront: {
+    title: "Waterfront & Outdoor Amenities",
+    route: "/waterfront-amenities",
+    backgroundImageName: "waterfront-bg.png",
+    sectionId: "amenities",
+    backgroundAlt: "Waterfront amenities at Moonglade Kokapet",
+    backgroundPosition: "center",
+  },
+  landscapes: {
+    title: "Landscapes & Waterscapes",
+    route: "/landscapes-waterscapes",
+    backgroundImageName: "landscapes-bg.png",
+    sectionId: "landscapes-waterscapes",
+    backgroundAlt: "Landscapes and waterscapes at Moonglade Kokapet",
+    backgroundPosition: "center",
+  },
+} as const;
+
 const Features: React.FC<FeaturesProps> = ({ type, list }) => {
   const data = useStaticQuery(graphql`
-    query FeaturesBackgroundImages {
+    query FeaturesSectionImages {
       allFile(
         filter: {
           sourceInstanceName: { eq: "images" }
-          relativePath: {
-            in: [
-              "waterfront-bg.png"
-              "landscapes-bg.png"
-              "blue-section-gradient.svg"
-            ]
-          }
+          relativePath: { in: ["waterfront-bg.png", "landscapes-bg.png", "blue-section-gradient.svg"] }
         }
       ) {
         nodes {
           relativePath
           publicURL
           childImageSharp {
-            gatsbyImageData(
+            backgroundImage: gatsbyImageData(
               placeholder: BLURRED
               formats: [AUTO, WEBP, AVIF]
               quality: 80
@@ -46,111 +129,117 @@ const Features: React.FC<FeaturesProps> = ({ type, list }) => {
     }
   `);
 
+  const config = SECTION_CONFIG[type];
   const featureBackground = data.allFile.nodes.find(
-    (node: FileNode) => node.relativePath === `${type}-bg.png`
+    (node: FileNode) => node.relativePath === config.backgroundImageName
   );
   const featureGradient = data.allFile.nodes.find(
     (node: FileNode) => node.relativePath === "blue-section-gradient.svg"
   );
 
   const backgroundImageData = featureBackground?.childImageSharp
-    ? getImage(featureBackground.childImageSharp)
+    ? getImage(featureBackground.childImageSharp.backgroundImage) ?? null
     : null;
   const gradientImage = featureGradient?.publicURL
     ? `url(${featureGradient.publicURL})`
     : "none";
-
-  const getTitle = () =>
-    type === "waterfront"
-      ? "Waterfront Amenities"
-      : "Landscapes Waterscapes";
+  const sliderRef = React.useRef<Slider | null>(null);
 
   const handleButtonClick = () => {
-    const route =
-      type === "waterfront"
-        ? "/waterfront-amenities"
-        : "/landscapes-waterscapes";
-    navigate(route);
+    navigate(config.route);
   };
 
-  const splitIntoColumns = (items: string[], columns: number) => {
-    const cols: string[][] = Array.from({ length: columns }, () => []);
-    items.forEach((item, i) => cols[i % columns].push(item));
-    return cols;
-  };
+  const getFeatureIcon = React.useCallback(
+    (label: string) => (FEATURE_ICON_BY_TYPE[type][normalizeLabel(label)] ?? FALLBACK_ICON)(),
+    [type]
+  );
 
-  const columns = splitIntoColumns(list, 5);
+  const cards: FeatureCard[] = list.map((item) => ({
+    label: item,
+    icon: getFeatureIcon(item),
+  }));
+
+  const sliderSettings = React.useMemo<Settings>(
+    () => ({
+      arrows: false,
+      autoplay: true,
+      autoplaySpeed: 2800,
+      cssEase: "ease-out",
+      dots: false,
+      infinite: cards.length > 6,
+      pauseOnFocus: true,
+      pauseOnHover: true,
+      responsive: [
+        {
+          breakpoint: 1536,
+          settings: {
+            slidesToShow: 6,
+            slidesToScroll: 1,
+          },
+        },
+        {
+          breakpoint: 1280,
+          settings: {
+            slidesToShow: 5,
+            slidesToScroll: 1,
+          },
+        },
+        {
+          breakpoint: 1024,
+          settings: {
+            slidesToShow: 4,
+            slidesToScroll: 1,
+          },
+        },
+        {
+          breakpoint: 768,
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 1,
+          },
+        },
+        {
+          breakpoint: 640,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 1,
+          },
+        },
+      ],
+      speed: 700,
+      slidesToShow: 6,
+      slidesToScroll: 1,
+    }),
+    [cards.length]
+  );
 
   return (
-    <div id="#amenities">
+    <div id={config.sectionId}>
       <section
-       
-        className="block xl:hidden w-full flex flex-col items-center text-center pb-10 bg-[#25336C]"
-        aria-label={`${getTitle()} section`}
-      >
-        <h3 className="font-['Prata'] text-[28px] sm:text-[34px] text-white mb-4 mt-6">
-          {getTitle()}
-        </h3>
-
-        {backgroundImageData && (
-          <div className="w-full px-4">
-            <GatsbyImage
-              image={backgroundImageData}
-              alt={`${getTitle()} mobile image`}
-              className="w-full h-auto rounded-lg"
-              loading="lazy"
-              objectFit="cover"
-              objectPosition="center"
-            />
-          </div>
-        )}
-
-        <div className="container mt-6 px-6 py-8">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-3 w-full">
-            {list.map((item) => (
-              <h4
-                key={item}
-                className="font-['Prata'] text-[14px] sm:text-[18px] text-white text-left leading-tight"
-              >
-                {item}
-              </h4>
-            ))}
-          </div>
-
-          <div className="flex justify-center mt-8">
-            <button
-              onClick={handleButtonClick}
-              className="font-['Prata'] py-2 px-8 border border-white text-white rounded-full text-[14px] sm:text-[18px] hover:bg-white/10 transition-colors"
-            >
-              Explore more
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section
-    
-        className="hidden xl:flex relative w-full h-[140vh] overflow-hidden flex-col justify-end items-center pb-[59px]"
-        aria-label={`${getTitle()} section`}
+        className="relative isolate overflow-hidden bg-[#25336C]"
+        aria-label={`${config.title} section`}
       >
         <div className="absolute inset-0 w-full h-full">
           {backgroundImageData ? (
             <GatsbyImage
               image={backgroundImageData}
-              alt={`${getTitle()} background`}
+              alt={config.backgroundAlt}
               className="w-full h-full"
               loading="lazy"
               style={{ height: "100%" }}
               objectFit="cover"
-              objectPosition="center"
+              objectPosition={config.backgroundPosition}
             />
           ) : (
             <div className="w-full h-full bg-gray-200 animate-pulse" />
           )}
         </div>
 
+        <div className="absolute inset-0 bg-[#15245D]/10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#F5F8FF]/10 via-transparent to-[#182A6B]/20" />
+
         <div
-          className="absolute bottom-0 left-0 right-0 h-[70%] z-5"
+          className="absolute bottom-0 left-0 right-0 h-[72%]"
           style={{
             backgroundImage: gradientImage,
             backgroundPosition: "center",
@@ -159,32 +248,58 @@ const Features: React.FC<FeaturesProps> = ({ type, list }) => {
           }}
         />
 
-        <div className="relative z-10 container flex flex-col justify-end">
-          <h3 className="text-center font-normal font-['Prata'] text-white tracking-normal leading-none text-[80px] xl:text-[90px]">
-            {getTitle()}
-          </h3>
+        <div className="relative z-10 container flex min-h-[520px] flex-col justify-end px-4 pb-10 pt-16 sm:min-h-[620px] sm:pb-12 md:min-h-[700px] lg:min-h-[780px] lg:pb-14 xl:min-h-[920px]">
+          <div className="mx-auto flex w-full max-w-[1180px] flex-col items-center text-center">
+            <h3 className="max-w-[9ch] text-center font-normal font-['Prata'] leading-[0.96] text-white text-[24px] sm:max-w-[12ch] sm:text-[38px] md:max-w-none md:text-[48px] md:whitespace-nowrap lg:text-[60px] xl:text-[72px] 2xl:text-[80px]">
+              {config.title}
+            </h3>
 
-          <div className="mt-8 mx-auto">
-            <div className="flex justify-between gap-8">
-              {columns.map((col, idx) => (
-                <ul key={idx} className="text-white list-disc list-inside">
-                  {col.map((item) => (
-                    <li key={item} className="mb-5 text-[18px] font-['Prata']">
-                      {item}
-                    </li>
+            <div className="flex items-center justify-center w-full gap-2 mt-8 sm:mt-10 sm:gap-4 lg:gap-6">
+              <button
+                type="button"
+                onClick={() => sliderRef.current?.slickPrev()}
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/65 bg-white text-[#25336C] shadow-[0_12px_35px_rgba(10,18,54,0.22)] transition-colors hover:bg-[#E7B99D] sm:h-11 sm:w-11"
+                aria-label={`Show previous ${config.title.toLowerCase()} items`}
+              >
+                <IoChevronBack className="text-lg sm:text-xl" />
+              </button>
+
+              <div className="features-slider w-full max-w-[1120px] overflow-hidden rounded-[28px] bg-[#25336C]/62  py-6 backdrop-blur-[2px]  sm:py-7  lg:py-8">
+                <Slider ref={sliderRef} {...sliderSettings}>
+                  {cards.map((card) => (
+                    <div key={card.label} className="px-2 sm:px-3">
+                      <article className="flex flex-col items-center justify-start">
+                        <div className="flex h-[72px] w-[72px] items-center justify-center rounded-full border border-white/20 bg-[#E5B79E] shadow-[0_16px_40px_rgba(10,18,54,0.26)] sm:h-[82px] sm:w-[82px] lg:h-[90px] lg:w-[90px]">
+                          {card.icon}
+                        </div>
+
+                        <p className="mt-3 min-h-[34px] max-w-[124px] text-center font-['Poppins'] text-[12px] leading-[1.25] text-white sm:max-w-[134px] sm:text-[13px] lg:max-w-[144px] lg:text-[14px]">
+                          {card.label}
+                        </p>
+                      </article>
+                    </div>
                   ))}
-                </ul>
-              ))}
-            </div>
-          </div>
+                </Slider>
+              </div>
 
-          <div className="flex justify-center items-center mt-12">
-            <button
-              onClick={handleButtonClick}
-              className="font-['Prata'] py-3 px-12 border border-white text-white rounded-full text-[24px] hover:bg-white/10 transition-colors"
-            >
-              Explore more
-            </button>
+              <button
+                type="button"
+                onClick={() => sliderRef.current?.slickNext()}
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/65 bg-white text-[#25336C] shadow-[0_12px_35px_rgba(10,18,54,0.22)] transition-colors hover:bg-[#E7B99D] sm:h-11 sm:w-11"
+                aria-label={`Show next ${config.title.toLowerCase()} items`}
+              >
+                <IoChevronForward className="text-lg sm:text-xl" />
+              </button>
+            </div>
+
+            <div className="flex items-center justify-center mt-8 sm:mt-10">
+              <button
+                onClick={handleButtonClick}
+                className="font-['Prata'] min-w-[176px] py-3 px-9 border border-white text-white rounded-full text-[15px] sm:min-w-[214px] sm:text-[20px] lg:min-w-[240px] lg:px-12 lg:py-4 lg:text-[24px] hover:bg-white/10 transition-colors"
+              >
+                Explore more
+              </button>
+            </div>
           </div>
         </div>
       </section>

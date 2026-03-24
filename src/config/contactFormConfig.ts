@@ -26,9 +26,14 @@ export const getContactFormConfig = (path: string): ContactFormConfig => {
   return contactFormConfigs[path] || contactFormConfigs.default;
 };
 
-export const getCurrentContactFormConfig = (): ContactFormConfig => {
+export const getCurrentContactFormConfig = (path?: string): ContactFormConfig => {
+  if (path) {
+    return getContactFormConfig(path);
+  }
+
   if (typeof window !== 'undefined') {
     return getContactFormConfig(window.location.pathname);
   }
+
   return contactFormConfigs.default;
 }; 

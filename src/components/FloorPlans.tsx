@@ -147,7 +147,7 @@ function FloorPlans({ setIsModalShow  ,setIsModalTitle}: FloorPlansPropsType) {
   return (
     <section className="py-10 md:py-14">
       <div className="container">
-        <div className="grid grid-cols-2   lg:grid-cols-3 gap-6 lg:gap-12 md:w-5/6 md:mx-auto" ref={containerRef}>
+        <div className="grid grid-cols-2 gap-6 lg:grid-cols-3 lg:gap-12 md:w-5/6 md:mx-auto" ref={containerRef}>
           {plansOrder.map((p, index) => {
             const image = pathToImage[p.file];
             const isVisible = visibleIndices.has(index);
@@ -168,7 +168,7 @@ function FloorPlans({ setIsModalShow  ,setIsModalTitle}: FloorPlansPropsType) {
                     alt={p.label}
                     className="w-full h-full "
                     loading="lazy"
-                    imgClassName="w-full h-full object-cover rounded-xl shadow-md"
+                    imgClassName="w-full h-full object-cover rounded-xl"
                   />
                 ) : (
                   <div className="w-full aspect-[4/3] bg-gray-100 shadow-md rounded-xl" />
@@ -176,7 +176,7 @@ function FloorPlans({ setIsModalShow  ,setIsModalTitle}: FloorPlansPropsType) {
 
                 {p.locked && (
                   <div className="absolute inset-0 flex flex-col items-center justify-evenly text-center bg-[#3b3e91]/80">
-                    <div className="flex items-center justify-center   text-white">
+                    <div className="flex items-center justify-center text-white">
                       <div className="hidden md:block">
                         <div className="w-[32px] h-[32px] sm:w-[40px] sm:h-[40px] md:w-[48px] md:h-[48px] lg:w-[48 px] lg:h-[48px]">
                         
@@ -206,7 +206,7 @@ function FloorPlans({ setIsModalShow  ,setIsModalTitle}: FloorPlansPropsType) {
                 )}
 
                 {p.highlight && (
-                  <div className="pointer-events-none absolute inset-0 rounded-xl ring-secondaryText" />
+                  <div className="absolute inset-0 pointer-events-none rounded-xl ring-secondaryText" />
                 )}
               </div>
             );
@@ -214,10 +214,10 @@ function FloorPlans({ setIsModalShow  ,setIsModalTitle}: FloorPlansPropsType) {
             return (
               <div key={p.file} className="flex flex-col">
                 {content}
-                <div className="mt-3 font-['Prata'] font-normal text-primaryText text-[10px] sm:text-[16px] lg:text-[19px] leading-[100%]">
+                <div className="mt-2 font-['Poppins'] font-normal text-primaryText text-[10px] sm:text-[16px] lg:text-[19px] leading-[100%]">
                   {p.label}
                 </div>
-                <p className="text-gray-600 font-normal text-base mt-1">
+                <p className="text-gray-600 font-normal text-base mt-1 font-['Poppins']">
                   {p.secondaryLabel}
                 </p>
               </div>
@@ -227,31 +227,31 @@ function FloorPlans({ setIsModalShow  ,setIsModalTitle}: FloorPlansPropsType) {
       </div>
 
       {isGalleryModalShow && selectIndexImage !== null && (
-        <section className="fixed inset-0 z-50 w-full h-full bg-black/80 backdrop-blur-md flex justify-center items-center">
+        <section className="fixed inset-0 z-50 flex items-center justify-center w-full h-full bg-black/80 backdrop-blur-md">
           <React.Suspense fallback={<div>Loading...</div>}>
             {/* prevent modal click close */}
             <div
               onClick={(e) => e.stopPropagation()}
-              className="relative flex items-center justify-center w-full max-w-5xl  "
+              className="relative flex items-center justify-center w-full max-w-5xl "
             >
               {/* Previous Button */}
               <button
                 onClick={showPrev}
                 disabled={selectIndexImage === 0}
-                className=" p-3 bg-black rounded-full disabled:cursor-not-allowed shadow hover:scale-105 transition-all 1s ease-in  disabled:opacity-40"
+                className="p-3 transition-all ease-in bg-black rounded-full shadow disabled:cursor-not-allowed hover:scale-105 1s disabled:opacity-40"
               >
                 <GrPrevious fontSize={25} className="text-bgPrimary" />
               </button>
 
               {/* Image in center */}
-              <div className="flex-1 flex justify-center px-6">
+              <div className="flex justify-center flex-1 px-6">
                 {(() => {
                   const plan = plansOrder[selectIndexImage];
                   const image = pathToImage[plan.file];
 
                   return (
                     image && (
-                      <div className="w-full full aspect-video rounded-lg shadow-sm ">
+                      <div className="w-full rounded-lg shadow-sm full aspect-video ">
                         <GatsbyImage
                           loading="lazy"
                           image={image}
@@ -267,7 +267,7 @@ function FloorPlans({ setIsModalShow  ,setIsModalTitle}: FloorPlansPropsType) {
               </div>
               <button
                 onClick={closeModal}
-                className="absolute -top-4 sm:top-0 right-0 p-3 bg-black rounded-full  shadow hover:scale-105 transition-all 1s ease-in  disabled:opacity-40"
+                className="absolute right-0 p-3 transition-all ease-in bg-black rounded-full shadow -top-4 sm:top-0 hover:scale-105 1s disabled:opacity-40"
               >
                 <GrFormClose fontSize={25} className="text-bgPrimary" />
               </button>
@@ -275,7 +275,7 @@ function FloorPlans({ setIsModalShow  ,setIsModalTitle}: FloorPlansPropsType) {
               <button
                 onClick={showNext}
                 disabled={selectIndexImage === plansOrder.length - 3}
-                className="p-3 bg-black rounded-full disabled:cursor-not-allowed shadow hover:scale-105 transition-all 1s ease-in disabled:opacity-40"
+                className="p-3 transition-all ease-in bg-black rounded-full shadow disabled:cursor-not-allowed hover:scale-105 1s disabled:opacity-40"
               >
                 <GrNext fontSize={25} className="text-bgPrimary" />
               </button>
