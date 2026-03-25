@@ -22,7 +22,7 @@ function LandscapesFeature() {
             gatsbyImageData(
               placeholder: BLURRED
               quality: 85
-              formats: [AUTO, WEBP, AVIF]
+              formats: [AUTO, WEBP]
               layout: CONSTRAINED
               width: 600
               height: 450

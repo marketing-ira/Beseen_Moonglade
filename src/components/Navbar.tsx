@@ -64,7 +64,7 @@ function Navbar({ setIsModalShow, setIsModalTitle, isMobileMenuOpen, setIsMobile
           </div>
         </Link>
 
-        <div className="hidden lg:flex gap-10 items-center">
+        <div className="items-center hidden gap-10 lg:flex">
           {NavLinks.map((link) => (
             <button
               key={link.url}
@@ -80,18 +80,19 @@ function Navbar({ setIsModalShow, setIsModalTitle, isMobileMenuOpen, setIsMobile
 
         <button
           onClick={toggleMobileMenu}
-          className="lg:hidden p-2 ml-auto"
+          className="p-2 ml-auto lg:hidden"
           aria-label="Toggle mobile menu"
         >
-          <div className="h-6 w-6 sm:h-7 sm:w-7">
-            <MobileMenu />
+          <div className="w-6 h-6 sm:h-7 sm:w-7">
+            {/* <MobileMenu /> */}
+            <StaticImage src="../assets/images/mobile-nav-icon.svg" alt="Mobile Menu Icon" />
           </div>
         </button>
       </nav>
 
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
           onClick={closeMobileMenu}
         />
       )}
@@ -100,7 +101,7 @@ function Navbar({ setIsModalShow, setIsModalTitle, isMobileMenuOpen, setIsMobile
         className={`fixed top-0 right-0 h-full w-80 bg-bgPrimary shadow-2xl z-[70] transform transition-transform duration-300 lg:hidden
           ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"}`}
       >
-        <header className="flex justify-between items-center p-6 border-b">
+        <header className="flex items-center justify-between p-6 border-b">
           <div className="h-8">
             {/* <NavLogo /> */}
             <StaticImage src="../assets/images/nav-logo.svg" alt="Beseen Moonglade" />

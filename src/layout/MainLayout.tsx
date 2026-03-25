@@ -10,6 +10,7 @@ interface MainLayoutProps {
   setIsModalTitle: React.Dispatch<React.SetStateAction<boolean>>;
   isModalShow: boolean;
   isShowModalTitle: boolean;
+  autoOpenSiteVisitModal?: boolean;
 }
 
 function MainLayout({
@@ -17,13 +18,23 @@ function MainLayout({
   isModalShow,
   children,
   setIsModalTitle,
-  isShowModalTitle
+  isShowModalTitle,
+  autoOpenSiteVisitModal = false,
 }: MainLayoutProps) {
   const [isMounted, setIsMounted] = React.useState(false);
+  const hasAutoOpenedModal = React.useRef(false);
 
   React.useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  React.useEffect(() => {
+    if (!isMounted || hasAutoOpenedModal.current || !autoOpenSiteVisitModal) return;
+
+    setIsModalShow(true);
+    setIsModalTitle(true);
+    hasAutoOpenedModal.current = true;
+  }, [autoOpenSiteVisitModal, isMounted, setIsModalShow, setIsModalTitle]);
 
   React.useEffect(() => {
     if (!isMounted || typeof window === "undefined") return;
@@ -168,9 +179,20 @@ function MainLayout({
             setIsModalShow(false);
             setIsModalTitle(false);
           }}
-          className="fixed inset-0 z-50 w-full h-full bg-black/20 backdrop-blur-md flex justify-center items-center sm:mt-8"
+          className="fixed inset-0 z-[99999] flex items-center justify-center w-full h-full bg-black/20 backdrop-blur-md "
         >
-          <div onClick={(e) => e.stopPropagation()}>
+          <div className="relative" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => {
+                setIsModalShow(false);
+                setIsModalTitle(false);
+              }}
+              className="absolute -top-3 -right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#1D256C] shadow-lg"
+              aria-label="Close contact card"
+            >
+              ×
+            </button>
             <ContactCard
               setIsModalShow={setIsModalShow}
               isShowModalTitle={isShowModalTitle}

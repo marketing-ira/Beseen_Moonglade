@@ -6,6 +6,7 @@ const PDF_FILENAME = "Moonglade-Brochure.pdf";
 interface FormFields {
   name: string;
   mobile: string;
+  bhkPreference: string;
   consent: boolean;
 }
 
@@ -18,6 +19,7 @@ function DownloadBrochureWithForm() {
   const [formData, setFormData] = useState<FormFields>({
     name: "",
     mobile: "",
+    bhkPreference: "",
     consent: false,
   });
 
@@ -137,7 +139,12 @@ function DownloadBrochureWithForm() {
     async (e: React.FormEvent) => {
       e.preventDefault();
 
-      if (!formData.name || !formData.mobile || !formData.consent) {
+      if (
+        !formData.name ||
+        !formData.mobile ||
+        !formData.bhkPreference ||
+        !formData.consent
+      ) {
         alert("Please fill all required fields and give consent.");
         return;
       }
@@ -177,7 +184,7 @@ function DownloadBrochureWithForm() {
           if (!downloadSuccess) throw new Error("PDF download failed");
 
           setTimeout(() => {
-            setFormData({ name: "", mobile: "", consent: false });
+            setFormData({ name: "", mobile: "", bhkPreference: "", consent: false });
             setTurnstileToken("");
             // Reset the Turnstile widget for next submission
             if (widgetIdRef.current && (window as any).turnstile) {
@@ -207,70 +214,117 @@ function DownloadBrochureWithForm() {
   // Prevent SSR rendering to avoid hydration issues
   if (!isClient) return null;
 
+  const fieldLabelClassName =
+    "block font-['Prata'] text-[12px] md:text-[14px] leading-none text-primaryText";
+  const fieldInputClassName =
+    "mt-3 w-full border-b border-[#BFC0C8] bg-transparent pb-3 font-['Prata'] text-[14px] md:text-[16px] leading-none text-primaryText outline-none placeholder:text-[#B2B2B8] disabled:opacity-70";
+
   return (
-    <section className="px-4 sm:px-[120px] pt-7 pb-8 md:pt-24 md:pb-20">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-[72px] items-start md:items-end">
-        <div>
-          <h2 className="font-['Prata'] text-[24px] sm:text-[30px] md:text-[49px] text-primaryText">
+    <section className="bg-[#FFFDFC] px-4 pb-10 pt-8 sm:px-8 md:px-[72px] md:pb-16 md:pt-20 xl:px-[120px] xl:pb-20">
+      <div className="mx-auto grid max-w-[1560px] grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(620px,1fr)] lg:gap-[88px] xl:gap-[110px]">
+        <div className="max-w-[480px]  pt-2 md:pt-0">
+          <h2 className="font-['Prata'] text-[36px] leading-[1.2] text-primaryText sm:text-[42px] md:text-[58px] md:leading-[1.12]">
             Download the <br /> Moonglade Brochure
           </h2>
-          <h3 className="mt-6 font-['Prata'] text-[#43474E] text-[16px] md:text-[16px]">
+          <p className="mt-8 max-w-[430px] font-['Prata'] text-[14px] leading-[1.7] text-[#43474E] md:text-[16px]">
             Please enter your details to download our brochure. Our team will
             get in touch with you and make sure your home buying journey is
             hassle-free.
-          </h3>
+          </p>
         </div>
 
-        <form className="w-full" onSubmit={handleSubmit} noValidate>
-          <label
-            htmlFor="db-name"
-            className="block font-['Prata'] text-primaryText text-[16px] md:text-[20px]"
-          >
-            Name:
-          </label>
-          <input
-            id="db-name"
-            type="text"
-            value={formData.name}
-            onChange={(e) => handleInputChange("name", e.target.value)}
-            className="mt-3 w-full border-b border-[#C9C9C9] bg-transparent font-['Prata'] text-[18px] md:text-[24px] pb-3 outline-none"
-            required
-            disabled={downloadState.isLoading}
-          />
+        <form className="w-full max-w-[760px]" onSubmit={handleSubmit} noValidate>
+          <div className="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-2 md:gap-y-10">
+            <div>
+              <label htmlFor="db-name" className={fieldLabelClassName}>
+                Name:
+              </label>
+              <input
+                id="db-name"
+                type="text"
+                value={formData.name}
+                onChange={(e) => handleInputChange("name", e.target.value)}
+                className={fieldInputClassName}
+                required
+                disabled={downloadState.isLoading}
+              />
+            </div>
 
-          {/* Mobile */}
-          <label
-            htmlFor="db-mobile"
-            className="block mt-8 font-['Prata'] text-primaryText text-[16px] md:text-[20px]"
-          >
-            Mobile Number:
-          </label>
-          <input
-            id="db-mobile"
-            type="tel"
-            inputMode="tel"
-            pattern="[0-9+\- ]{10,15}"
-            value={formData.mobile}
-            onChange={(e) => handleInputChange("mobile", e.target.value)}
-            className="mt-3 w-full border-b border-[#C9C9C9] bg-transparent font-['Prata'] text-[18px] md:text-[24px] pb-3 outline-none"
-            required
-            disabled={downloadState.isLoading}
-          />
+            <div>
+              <label htmlFor="db-bhk" className={fieldLabelClassName}>
+                Prefer BHK
+              </label>
+              <div className="relative">
+                <select
+                  id="db-bhk"
+                  value={formData.bhkPreference}
+                  onChange={(e) => handleInputChange("bhkPreference", e.target.value)}
+                  className={fieldInputClassName + " appearance-none pr-10"}
+                  required
+                  disabled={downloadState.isLoading}
+                >
+                  <option value="" disabled className="text-slate-900">
+                    Select BHK
+                  </option>
+                  <option value="3 BHK" className="text-slate-900">
+                    3 BHK
+                  </option>
+                  <option value="4 BHK" className="text-slate-900">
+                    4 BHK
+                  </option>
+                </select>
+                <span className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 text-[#777780]">
+                  <svg
+                    width="14"
+                    height="8"
+                    viewBox="0 0 14 8"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M1 1L7 7L13 1"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </div>
 
-          {/* Consent */}
-          <div className="mt-6 flex items-start gap-3">
+            <div className="md:col-span-2">
+              <label htmlFor="db-mobile" className={fieldLabelClassName}>
+                Mobile Number:
+              </label>
+              <input
+                id="db-mobile"
+                type="tel"
+                inputMode="tel"
+                pattern="[0-9+\- ]{10,15}"
+                value={formData.mobile}
+                onChange={(e) => handleInputChange("mobile", e.target.value)}
+                className={fieldInputClassName}
+                required
+                disabled={downloadState.isLoading}
+              />
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 mt-6 md:mt-7">
             <input
               id="db-consent"
               type="checkbox"
               checked={formData.consent}
               onChange={(e) => handleInputChange("consent", e.target.checked)}
-              className="mt-1 h-4 w-4 rounded border border-[#C9C9C9]"
+              className="mt-0.5 h-4 w-4 rounded border border-[#BFC0C8]"
               required
               disabled={downloadState.isLoading}
             />
             <label
               htmlFor="db-consent"
-              className="font-['Prata'] text-[7px] md:text-[14px] text-primaryText"
+              className="max-w-[700px] font-['Prata'] text-[9px] leading-[1.45] text-primaryText md:text-[11px]"
             >
               I authorize representatives of Moonglade to call, SMS, Email,
               or WhatsApp me about its products and offers. This consent
@@ -278,8 +332,7 @@ function DownloadBrochureWithForm() {
             </label>
           </div>
 
-          {/* Turnstile */}
-          <div className="mt-4 w-full flex justify-center overflow-hidden">
+          <div className="flex justify-center w-full mt-4 overflow-hidden md:justify-start">
             <div
               ref={turnstileWidgetRef}
               className="turnstile-widget w-full max-w-[280px] md:max-w-[320px] scale-95 md:scale-100 origin-top"
@@ -287,28 +340,25 @@ function DownloadBrochureWithForm() {
             />
           </div>
 
-          {/* Submit */}
-          <div className="mt-8">
+          <div className="mt-7 md:mt-8">
             <button
               type="submit"
               disabled={downloadState.isLoading}
-              className="font-['Prata'] text-white bg-[#1E247E] shadow-sm rounded-full px-6 py-2 md:px-10 md:py-3 text-[12px] md:text-[24px] border-none disabled:opacity-70 disabled:cursor-not-allowed"
+              className="inline-flex min-w-[188px] items-center justify-center rounded-full border border-[#2B2F86] px-7 py-3 font-['Prata'] text-[14px] leading-none text-[#2B2F86] transition-colors hover:bg-[#2B2F86] hover:text-white disabled:cursor-not-allowed disabled:opacity-70 md:min-w-[214px] md:px-9 md:text-[16px]"
             >
               {downloadState.isLoading ? "Submitting..." : "Download Brochure"}
             </button>
           </div>
 
-
-          {/* Error */}
           {downloadState.error && (
-            <div className="text-red-500 text-sm mt-2">
+            <div className="mt-2 text-sm text-red-500">
               {downloadState.error}
             </div>
           )}
 
           {/* Success */}
           {apiMessage && (
-            <div className="text-green-600 text-sm mt-2">{apiMessage}</div>
+            <div className="mt-2 text-sm text-green-600">{apiMessage}</div>
           )}
         </form>
       </div>

@@ -15,6 +15,7 @@ const WaterfrontAmenities: React.FC<PageProps> = () => {
       isModalShow={isModalShow}
       setIsModalTitle={setIsModalTitle}
       isShowModalTitle={isShowModalTitle}
+      autoOpenSiteVisitModal
     >
       <section className="bg-bgWaterFront">
         <WaterfrontFeaturesSection />

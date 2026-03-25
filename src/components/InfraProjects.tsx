@@ -17,7 +17,7 @@ const InfraProjects = () => {
           childImageSharp {
             gatsbyImageData(
               placeholder: BLURRED
-              formats: [AUTO, WEBP, AVIF]
+              formats: [AUTO, WEBP]
               quality: 80
               layout: CONSTRAINED
               width: 400
@@ -87,7 +87,7 @@ const InfraProjects = () => {
   return (
     <section id="#our-projects" className="bg-bgSecondaryLight">
       <div className="px-4 sm:px-8 lg:px-[120px] py-8 lg:py-16">
-        <h3 className="font-['Prata'] text-[24px] sm:text-[40px] lg:text-[48px] leading-[55px] lg:font-normal mb-6 lg:mb-10 md:font-medium">
+        <h3 className="font-['Prata'] text-[24px] sm:text-[40px] lg:text-[48px] leading-[38px] lg:leading-[58px] lg:font-normal mb-6 lg:mb-10 md:font-medium">
           Explore More Projects by E-Infra & IRA Developers
         </h3>
 
@@ -157,7 +157,7 @@ const InfraProjects = () => {
         </div>
 
         {/* Desktop Layout: Original 3-column grid */}
-        <div className="hidden lg:grid lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="hidden gap-4 lg:grid lg:grid-cols-3 sm:gap-6">
           {sortedImages.length > 0 ? (
             sortedImages.map((image: any, index: number) => {
               const meta = projectMeta[image.baseKey];
@@ -187,7 +187,7 @@ const InfraProjects = () => {
               );
             })
           ) : (
-            <p className="col-span-full text-center text-gray-600">
+            <p className="text-center text-gray-600 col-span-full">
               No images found in the images/InfraImage directory.
             </p>
           )}

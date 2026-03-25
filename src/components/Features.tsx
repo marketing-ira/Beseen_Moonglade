@@ -23,6 +23,9 @@ interface FeatureCard {
   icon: React.ReactNode;
 }
 
+const MOBILE_CARDS_PER_PAGE = 6;
+const MOBILE_AUTOPLAY_MS = 2800;
+
 const normalizeLabel = (label: string) =>
   label
     .toLowerCase()
@@ -65,7 +68,7 @@ const FEATURE_ICON_BY_TYPE: Record<FeaturesProps["type"], Record<string, Feature
     "zen zone": () => <StaticImage src="../assets/images/clubhouse/Waterfront-icons/Zen-Zone.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
   },
   landscapes: {
-    "barbecue food area": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/BarbecueFood-Area.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
+    "barbecue food area": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Barbecue-Food.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
     "childrens play area": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Childrens-Play-Area.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
     "cycling track": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Cycling-Track.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
     "entrance canopy": () => <StaticImage src="../assets/images/clubhouse/Landscapes-icon/Entrance-Canopy.png" alt="" aria-hidden="true" className={FEATURE_ICON_CLASSNAME} />,
@@ -103,6 +106,7 @@ const SECTION_CONFIG = {
 } as const;
 
 const Features: React.FC<FeaturesProps> = ({ type, list }) => {
+  const [hasMounted, setHasMounted] = React.useState(false);
   const data = useStaticQuery(graphql`
     query FeaturesSectionImages {
       allFile(
@@ -117,7 +121,7 @@ const Features: React.FC<FeaturesProps> = ({ type, list }) => {
           childImageSharp {
             backgroundImage: gatsbyImageData(
               placeholder: BLURRED
-              formats: [AUTO, WEBP, AVIF]
+              formats: [AUTO, WEBP]
               quality: 80
               layout: FULL_WIDTH
               breakpoints: [480, 768, 1024, 1280, 1920]
@@ -144,6 +148,7 @@ const Features: React.FC<FeaturesProps> = ({ type, list }) => {
     ? `url(${featureGradient.publicURL})`
     : "none";
   const sliderRef = React.useRef<Slider | null>(null);
+  const [mobilePageIndex, setMobilePageIndex] = React.useState(0);
 
   const handleButtonClick = () => {
     navigate(config.route);
@@ -158,6 +163,60 @@ const Features: React.FC<FeaturesProps> = ({ type, list }) => {
     label: item,
     icon: getFeatureIcon(item),
   }));
+
+  const mobilePages = React.useMemo(() => {
+    const pages: FeatureCard[][] = [];
+
+    for (let index = 0; index < cards.length; index += MOBILE_CARDS_PER_PAGE) {
+      pages.push(cards.slice(index, index + MOBILE_CARDS_PER_PAGE));
+    }
+
+    return pages;
+  }, [cards]);
+
+  React.useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  React.useEffect(() => {
+    setMobilePageIndex(0);
+  }, [type, list]);
+
+  React.useEffect(() => {
+    if (mobilePages.length <= 1) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setMobilePageIndex((currentPage) =>
+        currentPage === mobilePages.length - 1 ? 0 : currentPage + 1
+      );
+    }, MOBILE_AUTOPLAY_MS);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [mobilePages.length]);
+
+  const showPreviousMobilePage = React.useCallback(() => {
+    setMobilePageIndex((currentPage) => {
+      if (mobilePages.length === 0) {
+        return 0;
+      }
+
+      return currentPage === 0 ? mobilePages.length - 1 : currentPage - 1;
+    });
+  }, [mobilePages.length]);
+
+  const showNextMobilePage = React.useCallback(() => {
+    setMobilePageIndex((currentPage) => {
+      if (mobilePages.length === 0) {
+        return 0;
+      }
+
+      return currentPage === mobilePages.length - 1 ? 0 : currentPage + 1;
+    });
+  }, [mobilePages.length]);
 
   const sliderSettings = React.useMemo<Settings>(
     () => ({
@@ -191,21 +250,8 @@ const Features: React.FC<FeaturesProps> = ({ type, list }) => {
             slidesToScroll: 1,
           },
         },
-        {
-          breakpoint: 768,
-          settings: {
-            slidesToShow: 3,
-            slidesToScroll: 1,
-          },
-        },
-        {
-          breakpoint: 640,
-          settings: {
-            slidesToShow: 2,
-            slidesToScroll: 1,
-          },
-        },
       ],
+      rows: 1,
       speed: 700,
       slidesToShow: 6,
       slidesToScroll: 1,
@@ -248,47 +294,101 @@ const Features: React.FC<FeaturesProps> = ({ type, list }) => {
           }}
         />
 
-        <div className="relative z-10 container flex min-h-[520px] flex-col justify-end px-4 pb-10 pt-16 sm:min-h-[620px] sm:pb-12 md:min-h-[700px] lg:min-h-[780px] lg:pb-14 xl:min-h-[920px]">
+        <div className="relative z-10 container flex min-h-[700px] flex-col justify-end px-4 pb-14 pt-20 sm:min-h-[760px] sm:pb-16 sm:pt-24 md:min-h-[820px] md:pb-14 lg:min-h-[880px] lg:pb-14 xl:min-h-[920px]">
           <div className="mx-auto flex w-full max-w-[1180px] flex-col items-center text-center">
-            <h3 className="max-w-[9ch] text-center font-normal font-['Prata'] leading-[0.96] text-white text-[24px] sm:max-w-[12ch] sm:text-[38px] md:max-w-none md:text-[48px] md:whitespace-nowrap lg:text-[60px] xl:text-[72px] 2xl:text-[80px]">
+            <h3 className="max-w-[10ch] text-center font-normal font-['Prata'] leading-[0.96] text-white text-[48px] sm:max-w-[12ch] sm:text-[38px] md:max-w-none md:text-[48px] md:whitespace-nowrap lg:text-[60px] xl:text-[72px] 2xl:text-[80px]">
               {config.title}
             </h3>
 
-            <div className="flex items-center justify-center w-full gap-2 mt-8 sm:mt-10 sm:gap-4 lg:gap-6">
+            <div className="mt-8 flex w-full items-center justify-center gap-2 sm:mt-10 sm:gap-4 lg:gap-6">
               <button
                 type="button"
                 onClick={() => sliderRef.current?.slickPrev()}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/65 bg-white text-[#25336C] shadow-[0_12px_35px_rgba(10,18,54,0.22)] transition-colors hover:bg-[#E7B99D] sm:h-11 sm:w-11"
+                className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/65 bg-white text-[#25336C] shadow-[0_12px_35px_rgba(10,18,54,0.22)] transition-colors hover:bg-[#E7B99D] md:flex md:h-11 md:w-11"
                 aria-label={`Show previous ${config.title.toLowerCase()} items`}
               >
                 <IoChevronBack className="text-lg sm:text-xl" />
               </button>
 
-              <div className="features-slider w-full max-w-[1120px] overflow-hidden rounded-[28px] bg-[#25336C]/62  py-6 backdrop-blur-[2px]  sm:py-7  lg:py-8">
-                <Slider ref={sliderRef} {...sliderSettings}>
-                  {cards.map((card) => (
-                    <div key={card.label} className="px-2 sm:px-3">
-                      <article className="flex flex-col items-center justify-start">
-                        <div className="flex h-[72px] w-[72px] items-center justify-center rounded-full border border-white/20 bg-[#E5B79E] shadow-[0_16px_40px_rgba(10,18,54,0.26)] sm:h-[82px] sm:w-[82px] lg:h-[90px] lg:w-[90px]">
-                          {card.icon}
-                        </div>
+              <div className="hidden w-full max-w-[1120px] overflow-hidden rounded-[28px] bg-[#25336C]/62 px-3 py-7 backdrop-blur-[2px] md:block lg:px-0 lg:py-8">
+                {hasMounted ? (
+                  <Slider ref={sliderRef} {...sliderSettings}>
+                    {cards.map((card) => (
+                      <div key={card.label} className="px-3 py-2 sm:px-3">
+                        <article className="flex flex-col items-center justify-start">
+                          <div className="flex h-[72px] w-[72px] items-center justify-center rounded-full border border-white/20 bg-[#E5B79E] shadow-[0_16px_40px_rgba(10,18,54,0.26)] sm:h-[82px] sm:w-[82px] lg:h-[90px] lg:w-[90px]">
+                            {card.icon}
+                          </div>
 
-                        <p className="mt-3 min-h-[34px] max-w-[124px] text-center font-['Poppins'] text-[12px] leading-[1.25] text-white sm:max-w-[134px] sm:text-[13px] lg:max-w-[144px] lg:text-[14px]">
-                          {card.label}
-                        </p>
-                      </article>
-                    </div>
+                          <p className="mt-3 min-h-[34px] max-w-[92px] text-center font-['Poppins'] text-[11px] leading-[1.3] text-white sm:max-w-[108px] sm:text-[13px] lg:max-w-[144px] lg:text-[14px]">
+                            {card.label}
+                          </p>
+                        </article>
+                      </div>
+                    ))}
+                  </Slider>
+                ) : (
+                  <div className="grid grid-cols-4 gap-y-6 lg:grid-cols-5 xl:grid-cols-6">
+                    {cards.map((card) => (
+                      <div key={card.label} className="px-3 py-2 sm:px-3">
+                        <article className="flex flex-col items-center justify-start">
+                          <div className="flex h-[72px] w-[72px] items-center justify-center rounded-full border border-white/20 bg-[#E5B79E] shadow-[0_16px_40px_rgba(10,18,54,0.26)] sm:h-[82px] sm:w-[82px] lg:h-[90px] lg:w-[90px]">
+                            {card.icon}
+                          </div>
+
+                          <p className="mt-3 min-h-[34px] max-w-[92px] text-center font-['Poppins'] text-[11px] leading-[1.3] text-white sm:max-w-[108px] sm:text-[13px] lg:max-w-[144px] lg:text-[14px]">
+                            {card.label}
+                          </p>
+                        </article>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="w-full max-w-[360px] px-2 py-2 sm:max-w-[420px] sm:px-4 md:hidden">
+                <div className="grid grid-cols-3 gap-x-2 gap-y-5">
+                  {(mobilePages[mobilePageIndex] ?? []).map((card) => (
+                    <article key={card.label} className="flex flex-col items-center justify-start">
+                      <div className="flex h-[72px] w-[72px] items-center justify-center rounded-full border border-white/20 bg-[#E5B79E] shadow-[0_16px_40px_rgba(10,18,54,0.26)]">
+                        {card.icon}
+                      </div>
+
+                      <p className="mt-3 min-h-[34px] max-w-[92px] text-center font-['Poppins'] text-[11px] leading-[1.3] text-white">
+                        {card.label}
+                      </p>
+                    </article>
                   ))}
-                </Slider>
+                </div>
               </div>
 
               <button
                 type="button"
                 onClick={() => sliderRef.current?.slickNext()}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/65 bg-white text-[#25336C] shadow-[0_12px_35px_rgba(10,18,54,0.22)] transition-colors hover:bg-[#E7B99D] sm:h-11 sm:w-11"
+                className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/65 bg-white text-[#25336C] shadow-[0_12px_35px_rgba(10,18,54,0.22)] transition-colors hover:bg-[#E7B99D] md:flex md:h-11 md:w-11"
                 aria-label={`Show next ${config.title.toLowerCase()} items`}
               >
                 <IoChevronForward className="text-lg sm:text-xl" />
+              </button>
+            </div>
+
+            <div className="mt-5 flex items-center justify-center gap-3 md:hidden">
+              <button
+                type="button"
+                onClick={showPreviousMobilePage}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/65 bg-white text-[#25336C] shadow-[0_12px_35px_rgba(10,18,54,0.22)] transition-colors hover:bg-[#E7B99D]"
+                aria-label={`Show previous ${config.title.toLowerCase()} items`}
+              >
+                <IoChevronBack className="text-base" />
+              </button>
+
+              <button
+                type="button"
+                onClick={showNextMobilePage}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/65 bg-white text-[#25336C] shadow-[0_12px_35px_rgba(10,18,54,0.22)] transition-colors hover:bg-[#E7B99D]"
+                aria-label={`Show next ${config.title.toLowerCase()} items`}
+              >
+                <IoChevronForward className="text-base" />
               </button>
             </div>
 

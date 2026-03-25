@@ -5,6 +5,8 @@ import 'slick-carousel/slick/slick.css'
 export const onClientEntry = () => {
   if (typeof window === 'undefined') return;
 
+  const shouldDisableServiceWorker = !['beseen.moonglade.life', 'www.beseen.moonglade.life'].includes(window.location.hostname);
+
   // ── 1. Unregister stale service workers from preview/old domains ──────────
   // Users who visited beseen-moonglade-text.netlify.app may still have that
   // SW cached. Unregister any SW whose scriptURL doesn't match the current origin.
@@ -12,9 +14,17 @@ export const onClientEntry = () => {
     navigator.serviceWorker.getRegistrations().then((registrations) => {
       registrations.forEach((reg) => {
         const swOrigin = reg.active?.scriptURL || reg.installing?.scriptURL || reg.waiting?.scriptURL || '';
-        if (swOrigin && !swOrigin.startsWith(window.location.origin)) {
+        if (shouldDisableServiceWorker || (swOrigin && !swOrigin.startsWith(window.location.origin))) {
           reg.unregister();
         }
+      });
+    });
+  }
+
+  if (shouldDisableServiceWorker && 'caches' in window) {
+    caches.keys().then((cacheNames) => {
+      cacheNames.forEach((cacheName) => {
+        caches.delete(cacheName);
       });
     });
   }

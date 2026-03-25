@@ -64,14 +64,14 @@ function FAQs() {
 
   return (
     <section className="container bg-bgSecondaryLight py-10 md:py-[72px] ">
-      <div className="md:w-4/5  mx-auto">
+      <div className="mx-auto md:w-4/5">
         {/* Title */}
         <h3 className="text-center font-medium text-[24px]    font-['Prata'] text-primaryText    lg:leading-[55px]   lg:text-[50px] leading-[30px] ">
           Frequently Asked Questions
         </h3>
 
         {/* List */}
-        <div className="mt-6   sm:mt-12 md:mt-16 space-y-4 md:space-y-6">
+        <div className="mt-6 space-y-4 sm:mt-12 md:mt-16 md:space-y-6">
           {faqs.map((item, index) => {
             const isOpen = index === activeIndex;
             return (
@@ -91,7 +91,7 @@ function FAQs() {
                     "w-full flex items-center justify-between gap-4 text-left px-4 py-4 sm:px-6 sm:py-5"
                   }
                 >
-                  <span
+                  <div
                     className={`font-['Prata']  ${
                       isOpen
                         ? "text-secondaryText font-medium "
@@ -99,7 +99,7 @@ function FAQs() {
                     }  text-[14px] leading-7 sm:text-[16px] lg:text-[20px] `}
                   >
                     <h3>{item.question}</h3>
-                  </span>
+                  </div>
 
                   {/* Toggle Icon */}
                   <span

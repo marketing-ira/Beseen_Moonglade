@@ -124,7 +124,7 @@ function Footer() {
           </div>
 
           <div className="flex pb-3 mt-5 space-x-6 md:pt-3 md:hidden">
-            <StaticImage src="../assets/images/einfraa-ira-footer.png" alt="Einfraa" className="w-[143.53px] md:w-[286.7px] " />
+                         <StaticImage src="../assets/images/einfraa-ira-footer.png" alt="Einfraa" className="w-[143.53px] md:w-[286.7px] " />
           </div>
         </section>
       </div>

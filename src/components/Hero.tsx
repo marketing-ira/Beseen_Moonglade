@@ -28,7 +28,7 @@ function Hero(_: HeroProps) {
           childImageSharp {
             gatsbyImageData(
               placeholder: BLURRED
-              formats: [AUTO, WEBP, AVIF]
+              formats: [AUTO, WEBP]
               quality: 85
               layout: FULL_WIDTH
               breakpoints: [480, 768, 1024, 1280, 1920]

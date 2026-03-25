@@ -9,6 +9,7 @@ type FloorTitleSegment = {
 
 type FloorCard = {
   description: string;
+  mobileSpan: string;
   desktopSpan: string;
   descriptor?: string;
   title?: string;
@@ -21,6 +22,7 @@ const floorRows: FloorCard[][] = [
       titleSegments: [{ value: "1", suffix: "st" }],
       descriptor: "Floor",
       description: "Banquet Hall, Dining Area, Admin Room",
+      mobileSpan: "col-span-2",
       desktopSpan: "lg:col-span-2",
     },
     {
@@ -28,18 +30,21 @@ const floorRows: FloorCard[][] = [
       descriptor: "Floor",
       description:
         "Restaurant & Kitchen, Supermarket, Medical Center, Business Center & Conference, Guest Rooms",
+      mobileSpan: "col-span-3",
       desktopSpan: "lg:col-span-4",
     },
     {
       titleSegments: [{ value: "3", suffix: "rd" }],
       descriptor: "Floor",
       description: "Kids Play Zone, Day Care, Refuge Area",
+      mobileSpan: "col-span-3",
       desktopSpan: "lg:col-span-3",
     },
     {
       titleSegments: [{ value: "4", suffix: "th" }],
       descriptor: "Floor",
       description: "Spa/Salon, Refuge Area, Mini Theaters",
+      mobileSpan: "col-span-2",
       desktopSpan: "lg:col-span-3",
     },
   ],
@@ -48,6 +53,7 @@ const floorRows: FloorCard[][] = [
       titleSegments: [{ value: "5", suffix: "th" }],
       descriptor: "Floor",
       description: "Indoor Games, Gym, Yoga & Meditation, Refuge Area",
+      mobileSpan: "col-span-2",
       desktopSpan: "lg:col-span-3",
     },
     {
@@ -58,11 +64,13 @@ const floorRows: FloorCard[][] = [
       ],
       descriptor: "Floor",
       description: "Squash and Badminton Courts, Coffee Shop, Library",
+      mobileSpan: "col-span-3",
       desktopSpan: "lg:col-span-5",
     },
     {
       title: "Rooftop",
       description: "Separate pools for men, women, and kids",
+      mobileSpan: "col-span-5",
       desktopSpan: "lg:col-span-4",
     },
   ],
@@ -83,7 +91,7 @@ const Clubhouse = () => {
           childImageSharp {
             gatsbyImageData(
               placeholder: BLURRED
-              formats: [AUTO, WEBP, AVIF]
+              formats: [AUTO, WEBP]
               quality: 85
             )
           }
@@ -132,14 +140,14 @@ const Clubhouse = () => {
           <h2 className="font-['Prata'] text-[24px] sm:text-[40px] lg:text-[48px] font-medium leading-[20px] sm:leading-[1.2] lg:leading-[55px]">
             Be seen amongst the finest.
           </h2>
-          <h3 className="font-['Poppins'] font-light text-[16px] sm:text-[14px] lg:text-[18px] lg:pr-[430px] pr-9 mt-[18px]">
+          <h3 className="font-['Poppins'] font-light text-[14px] sm:text-[14px] lg:text-[18px] lg:pr-[430px] pr-9 mt-[18px]">
             At 135,000 sft., Starlight, the clubhouse at Moongalde is a
             playground for the privileged. Whether it’s for games, relaxation,
             or celebration it has exclusive spaces for every age.
           </h3>
         </div>
       </div>
-      {/* Use GatsbyImage instead of CSS background-image so Gatsby serves AVIF/WebP
+        {/* Use GatsbyImage instead of CSS background-image so Gatsby serves responsive optimized images
           at the correct breakpoint instead of the raw PNG via publicURL */}
       {clubHouse?.childImageSharp ? (
         <section className="w-full h-[25vh] md:h-screen relative overflow-hidden">
@@ -173,12 +181,12 @@ const Clubhouse = () => {
           {floorRows.map((row, rowIndex) => (
             <div
               key={`floor-row-${rowIndex}`}
-              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-12 lg:gap-5"
+              className="grid grid-cols-5 gap-4 lg:grid-cols-12 lg:gap-5"
             >
               {row.map((floor) => (
                 <article
                   key={`${floor.title ?? floor.description}`}
-                  className={`border border-[#D9D9D9] px-4 py-5 shadow-[0_0_0_1px_rgba(255,255,255,0.65)_inset] sm:px-5 sm:py-6 ${floor.desktopSpan}`}
+                  className={`border border-[#D9D9D9] px-4 py-5 shadow-[0_0_0_1px_rgba(255,255,255,0.65)_inset] sm:px-5 sm:py-6 ${floor.mobileSpan} ${floor.desktopSpan}`}
                 >
                   <div className="flex min-h-[118px] flex-col justify-between gap-5 sm:min-h-[126px] lg:min-h-[110px]">
                     <div>

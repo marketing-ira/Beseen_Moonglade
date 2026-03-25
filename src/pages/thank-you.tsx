@@ -3,6 +3,8 @@ import MainLayout from '../layout/MainLayout'
 import { Link } from 'gatsby'
 import type { HeadFC } from "gatsby"
 
+const normalizePhone = (value: string) => value.replace(/^(\+\d+)\s+/, '$1')
+
 const ThankYou = () => {
 
   const [isModalShow, setIsModalShow] = useState(false);
@@ -14,7 +16,7 @@ const ThankYou = () => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       setName(params.get('name') || '');
-      setPhone(params.get('phone') || '');
+      setPhone(normalizePhone(params.get('phone') || ''));
     }
   }, []);
 
@@ -34,12 +36,12 @@ const ThankYou = () => {
               We have received your request. Our team will contact you shortly.
             </p>
             {(name || phone) && (
-              <div className="mt-6 text-base text-gray-600 space-y-1">
+              <div className="mt-6 space-y-1 text-base text-gray-600">
                 {name && (
                   <p><span className="font-semibold text-gray-800">Name:</span> {name}</p>
                 )}
                 {phone && (
-                  <p><span className="font-semibold text-gray-800">Phone:</span> {phone}</p>
+                  <p><span className="font-semibold text-gray-800">Phone:</span>{phone}</p>
                 )}
               </div>
             )}

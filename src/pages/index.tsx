@@ -71,6 +71,9 @@ const FAQs = React.lazy(() => import("../components/FAQs"));
 const DownloadBrochure = React.lazy(
   () => import("../components/DownloadBrochure")
 );
+const PostFaqEnquirySection = React.lazy(
+  () => import("../components/PostFaqEnquirySection")
+);
 const PriceTable = React.lazy(
   () => import("../components/PriceTable")
 );
@@ -85,6 +88,7 @@ const IndexPage: React.FC<PageProps> = () => {
       isModalShow={isModalShow}
       setIsModalTitle={setIsModalTitle}
       isShowModalTitle={isShowModalTitle}
+      autoOpenSiteVisitModal
     >
       <h1 style={{position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden'}}>
         3 & 4 BHK Flats in Kokapet near Financial District, Hyderabad | Moonglade
@@ -171,6 +175,10 @@ const IndexPage: React.FC<PageProps> = () => {
           <FAQs />
         </LazySection>
       </section>
+
+      <LazySection minHeight="320px">
+        <PostFaqEnquirySection />
+      </LazySection>
     </MainLayout>
   );
 };

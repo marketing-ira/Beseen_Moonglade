@@ -72,7 +72,7 @@ function FloorPlans({ setIsModalShow  ,setIsModalTitle}: FloorPlansPropsType) {
           childImageSharp {
             gatsbyImageData(
               placeholder: BLURRED
-              formats: [AUTO, WEBP, AVIF]
+              formats: [AUTO, WEBP]
               quality: 90
             )
           }
@@ -214,10 +214,10 @@ function FloorPlans({ setIsModalShow  ,setIsModalTitle}: FloorPlansPropsType) {
             return (
               <div key={p.file} className="flex flex-col">
                 {content}
-                <div className="mt-2 font-['Poppins'] font-normal text-primaryText text-[10px] sm:text-[16px] lg:text-[19px] leading-[100%]">
+                <div className="mt-2 font-['Poppins'] font-normal text-primaryText text-[14px] sm:text-[16px] lg:text-[19px] leading-[100%]">
                   {p.label}
                 </div>
-                <p className="text-gray-600 font-normal text-base mt-1 font-['Poppins']">
+                <p className="text-gray-600 font-normal  mt-1 font-['Poppins'] text-[12px] sm:text-[10px] md:text-[12px] lg:text-[14px]">
                   {p.secondaryLabel}
                 </p>
               </div>

@@ -26,7 +26,7 @@ function Hero({ hideContactCard = false }: HeroProps) {
               placeholder: BLURRED
               quality: 80
               layout: FULL_WIDTH
-              formats: [AUTO, WEBP, AVIF]
+              formats: [AUTO, WEBP]
               breakpoints: [480, 768, 1024, 1280]
               sizes: "(max-width: 768px) 100vw, 100vw"
             )

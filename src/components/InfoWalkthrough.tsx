@@ -12,8 +12,8 @@ type DetailCardProps = {
 
 const DetailCard = ({ icon, title, description }: DetailCardProps) => {
   return (
-    <div className="flex min-h-[92px] items-start gap-3 border border-[#D9D9D9] border-opacity-1 px-3 py-4 sm:min-h-[108px] sm:gap-4 sm:px-4 lg:min-h-[100px] lg:px-5">
-      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center sm:h-12 sm:w-12">
+    <div className="flex min-h-[80px] items-start gap-3 border border-[#D9D9D9] border-opacity-1 px-3 py-4 sm:min-h-[108px] sm:gap-4 sm:px-4 lg:min-h-[100px] lg:px-5">
+      <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 sm:h-12 sm:w-12">
         {icon}
       </div>
       <div className="space-y-1 sm:space-y-1.5">
@@ -62,7 +62,7 @@ const InfoWalkthrough = () => {
           childImageSharp {
             gatsbyImageData(
               placeholder: BLURRED
-              formats: [AUTO, WEBP, AVIF]
+              formats: [AUTO, WEBP]
               quality: 80
             )
           }
@@ -93,13 +93,13 @@ const InfoWalkthrough = () => {
         <div className="relative mx-auto grid max-w-[1280px] gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(360px,0.9fr)] lg:items-start lg:gap-9 xl:gap-12">
           <div>
             <div className="">
-              <h2 className="font-['Prata'] max-w-[580px] text-[30px] font-normal leading-[1.04] tracking-[-0.03em] text-[#202020] sm:text-[40px] lg:text-[42px] lg:leading-[1.02]">
+              <h2 className="font-['Prata'] max-w-[580px] text-[24px] font-normal leading-[1.09] text-[#202020] sm:text-[40px] lg:text-[42px] lg:leading-[1.02]">
                 Be Seen at a Place That the City Will Admire
                 <span className="text-[#8D8D8D]"> - </span>
                 Moonglade at Kokapet
               </h2>
 
-              <p className="mt-5 max-w-[640px] font-poppins font-light text-[14px] leading-[1.65] text-[#4A4A4A] sm:text-[16px] lg:mt-8 lg:text-[16px]">
+              <p className="mt-5 max-w-[640px] font-poppins font-light text-[14px] leading-[1.65] text-[#4A4A4A] sm:text-[14px] lg:mt-8 lg:text-[16px]">
                 Experience the exceptional at Moonglade, Kokapet, a
                 <b className="font-semibold"> RERA-approved gated community in Kokapet, Hyderabad</b>,
                 featuring 3 BHK and 4 BHK <b className="font-semibold"> luxury high-rise apartments in Kokapet</b>.
@@ -153,7 +153,7 @@ const InfoWalkthrough = () => {
                 }
               />
               <DetailCard
-                icon={<StaticImage src="../assets/images/moonGlade/clubhouse.svg" alt="Beseen Moonglade Clubhouse Icon" className="w-[28px] sm:w-[36px]" />}
+                icon={<StaticImage src="../assets/images/moonGlade/clubHouse.svg" alt="Beseen Moonglade Clubhouse Icon" className="w-[28px] sm:w-[36px]" />}
                 title="Clubhouse"
                 description={
                   <>
@@ -201,13 +201,13 @@ const InfoWalkthrough = () => {
                   image={getImage((featureGradient as any).childImageSharp)!}
                   alt={"Moonglade Towers"}
                   loading="eager"
-                  className="h-full w-full object-cover"
+                  className="object-cover w-full h-full"
                 />
               ) : featureGradient ? (
                 <img
                   src={featureGradient.publicURL}
                   alt="Moonglade Towers walkthrough image"
-                  className="h-full w-full object-cover"
+                  className="object-cover w-full h-full"
                   loading="lazy"
                   decoding="async"
                 />
@@ -218,9 +218,10 @@ const InfoWalkthrough = () => {
                 onClick={() => setIsVideoModalShow(true)}
                 type="button"
                 aria-label="Play walkthrough video"
-                className="flex w-full items-center justify-center gap-3 bg-secondaryText px-5 py-4 text-white sm:gap-5 sm:px-8 sm:py-5 lg:justify-start lg:px-12 lg:py-6"
+                className="flex items-center justify-center w-full gap-3 px-5 py-4 text-white bg-secondaryText sm:gap-5 sm:px-8 sm:py-5 lg:justify-start lg:px-12 lg:py-6"
               >
-                <PlayIcon className="h-[36px] w-[36px] sm:h-[52px] sm:w-[52px] lg:h-[64px] lg:w-[64px]" />
+                {/* <PlayIcon className="h-[36px] w-[36px] sm:h-[52px] sm:w-[52px] lg:h-[64px] lg:w-[64px]" /> */}
+              <StaticImage src="../assets/images/play-icon.svg" alt="Play Icon" className="h-[36px] w-[36px] sm:h-[52px] sm:w-[52px] lg:h-[64px] lg:w-[64px]" />
                 <span className="font-['Poppins'] text-[13px] leading-none sm:text-[16px] lg:text-[20px]">
                   Click to View the Walkthrough Video
                 </span>
@@ -232,7 +233,7 @@ const InfoWalkthrough = () => {
       {isVideoModalShow && (
         <section
           onClick={() => setIsVideoModalShow(false)}
-          className="fixed inset-0 z-50 w-full h-full bg-black/20 backdrop-blur-md flex justify-center items-center"
+          className="fixed inset-0 z-50 flex items-center justify-center w-full h-full bg-black/20 backdrop-blur-md"
         >
           <div
             onClick={(e) => e.stopPropagation()}

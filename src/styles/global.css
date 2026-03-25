@@ -92,12 +92,11 @@ body {
 }
 
 .features-slider .slick-track {
-  display: flex;
-  align-items: flex-start;
+  display: block;
 }
 
 .features-slider .slick-slide {
-  height: inherit;
+  height: auto;
 }
 
 .features-slider .slick-slide > div {

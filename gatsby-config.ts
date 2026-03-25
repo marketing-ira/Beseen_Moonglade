@@ -24,7 +24,7 @@ const config: GatsbyConfig = {
       resolve: `gatsby-plugin-image`,
       options: {
         defaults: {
-          formats: [`auto`, `webp`, `avif`],
+          formats: [`auto`, `webp`],
           placeholder: `blurred`,
           quality: 80,
           breakpoints: [480, 768, 1024, 1280, 1920],
@@ -35,7 +35,7 @@ const config: GatsbyConfig = {
       resolve: `gatsby-plugin-sharp`,
       options: {
         defaults: {
-          formats: [`auto`, `webp`, `avif`],
+          formats: [`auto`, `webp`],
           placeholder: `blurred`,
           quality: 80,
           breakpoints: [480, 768, 1024, 1280, 1920],
@@ -132,7 +132,6 @@ const config: GatsbyConfig = {
         legacy: true,
       },
     },
-    `gatsby-plugin-offline`,
   ],
   trailingSlash: `never`,
   flags: {
