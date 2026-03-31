@@ -1,14 +1,16 @@
 import React, { useState } from "react";
+import { countryCodes } from "../../utils/countryCodes";
 
 function DownloadMoongladeBrochure() {
   const [name, setName] = useState("");
+  const [countryCode, setCountryCode] = useState("+91");
   const [mobile, setMobile] = useState("");
   const [consent, setConsent] = useState(false);
 
   const handleSubmitButton = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!name || !mobile || !consent) {
+    if (!name || !countryCode || !mobile || !consent) {
       alert("Please fill in all fields and provide consent before submitting.");
       return;
     }
@@ -19,6 +21,7 @@ function DownloadMoongladeBrochure() {
       );
 
       setConsent(false);
+      setCountryCode("+91");
       setName("");
       setMobile("");
     }
@@ -64,6 +67,29 @@ function DownloadMoongladeBrochure() {
           <div>
             <label
               className="block text-primaryText font-['Prata'] font-normal text-sm md:text-base leading-[100%] tracking-[0] mb-2"
+              htmlFor="countryCode"
+            >
+              Country Code:
+            </label>
+            <select
+              id="countryCode"
+              value={countryCode}
+              onChange={(e) => setCountryCode(e.target.value)}
+              className="w-full font-['Prata'] font-normal text-sm md:text-base leading-[100%] tracking-[0] text-placeholderText border-0 border-b border-primaryText bg-transparent focus:ring-0 focus:border-primaryText pb-3 pl-1 outline-none"
+              required
+              aria-required="true"
+            >
+              {countryCodes.map((code) => (
+                <option key={code.value} value={code.value} className="text-[#1D256C]">
+                  {code.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label
+              className="block text-primaryText font-['Prata'] font-normal text-sm md:text-base leading-[100%] tracking-[0] mb-2"
               htmlFor="mobile"
             >
               Mobile Number:
@@ -74,10 +100,10 @@ function DownloadMoongladeBrochure() {
               value={mobile}
               onChange={(e) => setMobile(e.target.value)}
               className="w-full font-['Prata'] font-normal text-sm md:text-base leading-[100%] tracking-[0] text-placeholderText  border-0 border-b border-primaryText focus:ring-0 focus:border-primaryText bg-transparent placeholder:text-[#838383] pb-3 pl-1 outline-none"
-              placeholder="+91 7853218970"
+              placeholder="7853218970"
               required
               aria-required="true"
-              pattern="[0-9+\- ]{10,15}"
+              pattern="[0-9\- ]{6,15}"
             />
           </div>
 

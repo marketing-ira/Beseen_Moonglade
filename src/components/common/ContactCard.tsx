@@ -2,6 +2,7 @@ import React, { useState, memo, useRef, useCallback, useEffect } from "react";
 import { navigate } from "gatsby";
 import { getCurrentContactFormConfig } from "../../config/contactFormConfig";
 import { TURNSTILE_SITE_KEY } from "../../config/turnstileConfig";
+import { countryCodes } from "../../utils/countryCodes";
 
 interface ContactCardPropsType {
   setIsModalShow?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -15,6 +16,7 @@ interface ContactCardPropsType {
 
 interface FormFields {
   name: string;
+  countryCode: string;
   mobile: string;
   email: string;
   bhkPreference: string;
@@ -32,6 +34,7 @@ function ContactCard({
 }: ContactCardPropsType) {
   const [formData, setFormData] = useState<FormFields>({
     name: "",
+    countryCode: "+91",
     mobile: "",
     email: "",
     bhkPreference: "",
@@ -172,6 +175,7 @@ function ContactCard({
 
       if (
         !formData.name ||
+        !formData.countryCode ||
         !formData.mobile ||
         (showBhkPreference && !formData.bhkPreference) ||
         !formData.consent ||
@@ -194,13 +198,13 @@ function ContactCard({
 
       try {
         const form_payload = new FormData();
+        const fullMobile = `${formData.countryCode}${formData.mobile.toString().replace(/\D/g, "")}`;
 
         Object.entries(formData).forEach(([key, value]) => {
           if (key === "mobile") {
-            const mobileWithPrefix = value.toString().startsWith("+91")
-              ? value.toString()
-              : `+91${value}`;
-            form_payload.append(key, mobileWithPrefix);
+            form_payload.append(key, fullMobile);
+          } else if (key === "countryCode") {
+            return;
           } else {
             form_payload.append(key, value.toString());
           }
@@ -231,13 +235,13 @@ function ContactCard({
           setIsSuccess(true);
 
           setTimeout(() => {
-            setFormData({ name: "", mobile: "", email: "", bhkPreference: "", consent: false });
+            setFormData({ name: "", countryCode: "+91", mobile: "", email: "", bhkPreference: "", consent: false });
             setTurnstileToken("");
             // Reset the Turnstile widget for next use
             if (widgetIdRef.current && (window as any).turnstile) {
               (window as any).turnstile.reset(widgetIdRef.current);
             }
-            navigate(`/thank-you?name=${encodeURIComponent(formData.name)}&phone=${encodeURIComponent(formData.mobile)}`);
+            navigate(`/thank-you?name=${encodeURIComponent(formData.name)}&phone=${encodeURIComponent(fullMobile)}`);
           }, 1500);
         } else {
           setIsSuccess(false);
@@ -258,27 +262,31 @@ function ContactCard({
 
   const isHeroVariant = variant === "hero";
   const isInlineLightVariant = variant === "inline-light";
+  const isModalVariant = Boolean(isShowModalTitle);
   const containerClasses = isHeroVariant
-    ? "w-[300px] xl:w-[360px] bg-[#B88A73]/95 rounded-2xl shadow-[0_24px_80px_rgba(7,17,48,0.32)] p-5 xl:p-6"
+    ? "w-[360px] xl:w-[520px] bg-[#B88A73]/95 rounded-2xl shadow-[0_24px_80px_rgba(7,17,48,0.32)] p-5 xl:p-6"
+    : isModalVariant
+    ? "w-full max-w-[500px] bg-contactFormBG/70 rounded-xl shadow-lg p-6 sm:p-7 md:p-8 lg:p-8 backdrop-blur-lg"
     : isInlineLightVariant
     ? "w-full"
-    : "w-[237px] md:w-[300px] lg:w-[320px] xl:w-[420px] bg-contactFormBG/70 rounded-xl shadow-lg p-6 sm:p-7 md:p-8 lg:p-8 backdrop-blur-lg";
+    : "w-[500px] md:w-[500px] lg:w-[500px] xl:w-[700px] bg-contactFormBG/70 rounded-xl shadow-lg p-6 sm:p-7 md:p-8 lg:p-8 backdrop-blur-lg";
   const formClasses = isHeroVariant
     ? "flex flex-col gap-4"
     : isInlineLightVariant
     ? "grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-2 md:gap-y-10"
     : "flex flex-col gap-6";
-  const labelClasses = isHeroVariant
-    ? "block text-white/95 font-['Poppins'] text-[12px] xl:text-[14px] mb-2"
+  const labelClasses = isHeroVariant || isModalVariant
+    ? "block text-white/95 font-['Poppins'] text-[12px] xl:text-[14px] mb-2 whitespace-nowrap"
     : isInlineLightVariant
-    ? "block font-['Prata'] text-[12px] md:text-[14px] leading-none text-primaryText"
+    ? "block font-['Prata'] text-[12px] md:text-[14px] leading-none text-primaryText whitespace-nowrap"
     : "block text-primaryTitleText font-['Prata'] text-[10.5px] md:text-[21px] mb-1";
-  const inputClasses = isHeroVariant
+  const inputClasses = isHeroVariant || isModalVariant
     ? "w-full font-['Prata'] text-[14px] text-white placeholder:text-white/60 bg-transparent border-0 border-b border-white/50 focus:ring-0 focus:border-white pb-2 pl-0 outline-none"
     : isInlineLightVariant
     ? "mt-3 w-full appearance-none border-0 border-b border-[#BFC0C8] bg-transparent pb-3 pl-0 font-['Prata'] text-[14px] leading-none text-primaryText outline-none focus:border-[#2B2F86] focus:ring-0 md:text-[16px]"
     : "w-full font-['Prata'] text-12px md:text-24px text-placeholderText bg-transparent border-0 border-b-2 border-bgPrimary focus:ring-0 focus:border-bgPrimary pb-1 md:pb-3 pl-1 outline-none";
-  const mobileInputClasses = isHeroVariant
+  const countryCodeSelectTextColor = isHeroVariant || isModalVariant ? "#FFFFFF" : "#181B20";
+  const mobileInputClasses = isHeroVariant || isModalVariant
     ? "w-full font-['Prata'] text-[14px] text-white placeholder:text-white/60 bg-transparent border-0 border-b border-white/50 focus:ring-0 focus:border-white pb-2 pl-0 outline-none"
     : isInlineLightVariant
     ? "mt-3 w-full border-0 border-b border-[#BFC0C8] bg-transparent pb-3 pl-0 font-['Prata'] text-[14px] leading-none text-primaryText outline-none focus:border-[#2B2F86] focus:ring-0 md:text-[16px]"
@@ -404,23 +412,81 @@ function ContactCard({
           </div>
         )}
 
-        <div className={isInlineLightVariant ? "md:col-span-2" : undefined}>
-          <label
-            htmlFor="mobile"
-            className={labelClasses}
-          >
-            Mobile Number:
-          </label>
-          <input
-            id="mobile"
-            type="tel"
-            value={formData.mobile}
-            onChange={(e) => handleInputChange("mobile", e.target.value)}
-            className={mobileInputClasses}
-            placeholder={isHeroVariant ? "+91 7853218970" : undefined}
-            required
-            pattern="[0-9+\- ]{10,15}"
-          />
+        <div className={isInlineLightVariant || isModalVariant ? "md:col-span-2 grid grid-cols-[180px_minmax(0,1fr)] gap-6 items-end" : undefined}>
+          <div className={isInlineLightVariant || isModalVariant ? undefined : "mb-4"}>
+            <label htmlFor="countryCode" className={labelClasses}>
+              Country Code:
+            </label>
+            <div className="relative">
+              <select
+                id="countryCode"
+                value={formData.countryCode}
+                onChange={(e) => handleInputChange("countryCode", e.target.value)}
+                style={{ color: countryCodeSelectTextColor }}
+                className={
+                  inputClasses +
+                  " appearance-none " +
+                  (isHeroVariant || isModalVariant ? "text-white" : "text-primaryText")
+                }
+                required
+              >
+                {countryCodes.map((code) => (
+                  <option
+                    key={code.value}
+                    value={code.value}
+                    style={{
+                      color: "#181B20",
+                      backgroundColor: "transparent",
+                    }}
+                  >
+                    {code.label}
+                  </option>
+                ))}
+              </select>
+              <span
+                className={
+                  "pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 " +
+                  (isHeroVariant || isModalVariant ? "text-white" : "text-[#777780]")
+                }
+              >
+                <svg
+                  width="14"
+                  height="8"
+                  viewBox="0 0 14 8"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M1 1L7 7L13 1"
+                    stroke="currentColor"
+                    strokeWidth="1.25"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="mobile"
+              className={labelClasses}
+            >
+              Mobile Number:
+            </label>
+            <input
+              id="mobile"
+              type="tel"
+              value={formData.mobile}
+              onChange={(e) => handleInputChange("mobile", e.target.value)}
+              className={mobileInputClasses}
+              placeholder={isInlineLightVariant ? "7853218970" : undefined}
+              required
+              pattern="[0-9\- ]{6,15}"
+            />
+          </div>
         </div>
 
         {!isInlineLightVariant && showBhkPreference && (

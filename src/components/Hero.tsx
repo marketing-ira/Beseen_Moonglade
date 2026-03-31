@@ -59,7 +59,7 @@ function Hero(_: HeroProps) {
   return (
     <section
       id="/"
-      className="relative w-full overflow-hidden mt-[64px] sm:mt-[76px] lg:mt-[88px]"
+      className="relative w-full overflow-visible mt-[64px] sm:mt-[76px] lg:mt-[88px]"
       aria-label="Hero Section"
     >
       <div className="hidden w-full sm:block">

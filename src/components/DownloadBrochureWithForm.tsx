@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { TURNSTILE_SITE_KEY } from "../config/turnstileConfig";
+import { countryCodes } from "../utils/countryCodes";
 const PDF_URL = "/Moonglade-Brochure.pdf";
 const PDF_FILENAME = "Moonglade-Brochure.pdf";
 
 interface FormFields {
   name: string;
+  countryCode: string;
   mobile: string;
   bhkPreference: string;
   consent: boolean;
@@ -18,6 +20,7 @@ interface DownloadState {
 function DownloadBrochureWithForm() {
   const [formData, setFormData] = useState<FormFields>({
     name: "",
+    countryCode: "+91",
     mobile: "",
     bhkPreference: "",
     consent: false,
@@ -141,6 +144,7 @@ function DownloadBrochureWithForm() {
 
       if (
         !formData.name ||
+        !formData.countryCode ||
         !formData.mobile ||
         !formData.bhkPreference ||
         !formData.consent
@@ -158,10 +162,12 @@ function DownloadBrochureWithForm() {
 
       try {
         const form_payload = new FormData();
+        const mobileValue = `${formData.countryCode}${formData.mobile.toString().replace(/\D/g, "")}`;
         Object.entries(formData).forEach(([key, value]) => {
           if (key === "mobile") {
-            const mobileWithPrefix = value.toString().startsWith("+91") ? value.toString() : `+91${value}`;
-            form_payload.append(key, mobileWithPrefix);
+            form_payload.append(key, mobileValue);
+          } else if (key === "countryCode") {
+            return;
           } else {
             form_payload.append(key, value.toString());
           }
@@ -184,7 +190,7 @@ function DownloadBrochureWithForm() {
           if (!downloadSuccess) throw new Error("PDF download failed");
 
           setTimeout(() => {
-            setFormData({ name: "", mobile: "", bhkPreference: "", consent: false });
+            setFormData({ name: "", countryCode: "+91", mobile: "", bhkPreference: "", consent: false });
             setTurnstileToken("");
             // Reset the Turnstile widget for next submission
             if (widgetIdRef.current && (window as any).turnstile) {
@@ -218,6 +224,7 @@ function DownloadBrochureWithForm() {
     "block font-['Prata'] text-[12px] md:text-[14px] leading-none text-primaryText";
   const fieldInputClassName =
     "mt-3 w-full border-b border-[#BFC0C8] bg-transparent pb-3 font-['Prata'] text-[14px] md:text-[16px] leading-none text-primaryText outline-none placeholder:text-[#B2B2B8] disabled:opacity-70";
+  const countryCodeSelectTextColor = "#181B20";
 
   return (
     <section className="bg-[#FFFDFC] px-4 pb-10 pt-8 sm:px-8 md:px-[72px] md:pb-16 md:pt-20 xl:px-[120px] xl:pb-20">
@@ -295,6 +302,54 @@ function DownloadBrochureWithForm() {
             </div>
 
             <div className="md:col-span-2">
+              <label htmlFor="db-countryCode" className={fieldLabelClassName}>
+                Country Code:
+              </label>
+              <div className="relative">
+                <select
+                  id="db-countryCode"
+                  value={formData.countryCode}
+                  onChange={(e) => handleInputChange("countryCode", e.target.value)}
+                  style={{ color: countryCodeSelectTextColor }}
+                  className={fieldInputClassName + " appearance-none"}
+                  required
+                  disabled={downloadState.isLoading}
+                >
+                  {countryCodes.map((code) => (
+                    <option
+                      key={code.value}
+                      value={code.value}
+                      style={{
+                        color: "#181B20",
+                        backgroundColor: "transparent",
+                      }}
+                    >
+                      {code.label}
+                    </option>
+                  ))}
+                </select>
+                <span className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 text-[#777780]">
+                  <svg
+                    width="14"
+                    height="8"
+                    viewBox="0 0 14 8"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M1 1L7 7L13 1"
+                      stroke="currentColor"
+                      strokeWidth="1.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </div>
+
+            <div className="md:col-span-2">
               <label htmlFor="db-mobile" className={fieldLabelClassName}>
                 Mobile Number:
               </label>
@@ -302,10 +357,11 @@ function DownloadBrochureWithForm() {
                 id="db-mobile"
                 type="tel"
                 inputMode="tel"
-                pattern="[0-9+\- ]{10,15}"
+                pattern="[0-9\- ]{6,15}"
                 value={formData.mobile}
                 onChange={(e) => handleInputChange("mobile", e.target.value)}
                 className={fieldInputClassName}
+                placeholder="7853218970"
                 required
                 disabled={downloadState.isLoading}
               />

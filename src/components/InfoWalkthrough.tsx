@@ -179,17 +179,17 @@ const InfoWalkthrough = () => {
                 title="Pricing"
                 description={
                   <>
-                    Starting at ₹1.4 Cr* for a
+                    Starting at ₹1.45 Cr* for a
                     <br />
                    <b className="font-semibold">3 BHK flat 1400 sqft Hyderabad</b>  & a 
-                    <b className="font-semibold">4 BHK flat 3500 sqft Hyderabad</b>
+                    <b className="font-semibold"> 4 BHK flat 3500 sqft Hyderabad</b>
                   </>
                 }
               />
               <DetailCard
                 icon={<StaticImage src="../assets/images/moonGlade/towers.svg" alt="Beseen Moonglade Towers Icon" className="w-[28px] sm:w-[36px]" />}
                 title="Towers"
-                description={<b className="font-semibold">7</b>}
+                description={<b className="font-semibold">7 luxury towers</b>}
               />
             </div>
           </div>
