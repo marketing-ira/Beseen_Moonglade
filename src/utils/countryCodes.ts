@@ -181,4 +181,4 @@ export const countryCodes: CountryCodeOption[] = [
   { value: "+690", label: "Tokelau +690" },
   { value: "+691", label: "Micronesia +691" },
   { value: "+692", label: "Marshall Islands +692" },
-];
+].sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: "base" }));

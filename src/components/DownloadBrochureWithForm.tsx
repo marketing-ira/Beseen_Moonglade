@@ -36,8 +36,26 @@ function DownloadBrochureWithForm() {
   const turnstileWidgetRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const [utmData, setUtmData] = useState({
+    utm_source: "",
+    utm_medium: "",
+    utm_campaign: "",
+    utm_term: "",
+  });
 
   useEffect(() => setIsClient(true), []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      setUtmData({
+        utm_source: params.get("utm_source") || "",
+        utm_medium: params.get("utm_medium") || "",
+        utm_campaign: params.get("utm_campaign") || "",
+        utm_term: params.get("utm_term") || "",
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (!isClient) return;
@@ -173,12 +191,21 @@ function DownloadBrochureWithForm() {
           }
         });
         form_payload.append("property", "Moonglade");
-        form_payload.append("turnstileToken", turnstileToken);
 
-        const apiResponse = await fetch(
-          "https://irarealty.in/cms/api/submitMoonglade",
-          { method: "POST", body: form_payload }
-        );
+        // Build API URL with UTM query parameters and CAPTCHA token
+        const apiUrl = new URL("https://irarealty.in/cms/api/submitMoonglade");
+        Object.entries(utmData).forEach(([key, value]) => {
+          if (value) {
+            apiUrl.searchParams.append(key, value);
+          }
+        });
+        // Add CAPTCHA token to query parameters
+        apiUrl.searchParams.append("cf-turnstile-response", turnstileToken);
+
+        const apiResponse = await fetch(apiUrl.toString(), {
+          method: "POST",
+          body: form_payload,
+        });
 
         const responseJson = await apiResponse.json();
 
@@ -207,7 +234,7 @@ function DownloadBrochureWithForm() {
         setDownloadState({ isLoading: false, error: error.message });
       }
     },
-    [formData, turnstileToken, downloadPdf]
+    [formData, turnstileToken, downloadPdf, utmData]
   );
 
   useEffect(() => {

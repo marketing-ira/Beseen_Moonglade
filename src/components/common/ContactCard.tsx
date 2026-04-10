@@ -57,6 +57,7 @@ function ContactCard({
     utm_source: "",
     utm_medium: "",
     utm_campaign: "",
+    utm_term: "",
   });
   const [pathname, setPathname] = useState<string | null>(null);
 
@@ -69,6 +70,7 @@ function ContactCard({
         utm_source: params.get("utm_source") || "",
         utm_medium: params.get("utm_medium") || "",
         utm_campaign: params.get("utm_campaign") || "",
+        utm_term: params.get("utm_term") || "",
       });
     }
   }, []);  
@@ -210,22 +212,22 @@ function ContactCard({
           }
         });
 
+        form_payload.append("property", "Moonglade");
+
+        // Build API URL with UTM query parameters and CAPTCHA token
+        const apiUrl = new URL("https://irarealty.in/cms/api/submitMoonglade");
         Object.entries(utmData).forEach(([key, value]) => {
           if (value) {
-            form_payload.append(key, value);
+            apiUrl.searchParams.append(key, value);
           }
         });
+        // Add CAPTCHA token to query parameters
+        apiUrl.searchParams.append("cf-turnstile-response", turnstileToken);
 
-        form_payload.append("property", "Moonglade");
-        form_payload.append("turnstileToken", turnstileToken);
-
-        const apiResponse = await fetch(
-          "https://irarealty.in/cms/api/submitMoonglade",
-          {
-            method: "POST",
-            body: form_payload,
-          }
-        );
+        const apiResponse = await fetch(apiUrl.toString(), {
+          method: "POST",
+          body: form_payload,
+        });
 
         const responseJson = await apiResponse.json();
 
@@ -266,10 +268,10 @@ function ContactCard({
   const containerClasses = isHeroVariant
     ? "w-[360px] xl:w-[520px] bg-[#B88A73]/95 rounded-2xl shadow-[0_24px_80px_rgba(7,17,48,0.32)] p-5 xl:p-6"
     : isModalVariant
-    ? "w-full max-w-[500px] bg-contactFormBG/70 rounded-xl shadow-lg p-6 sm:p-7 md:p-8 lg:p-8 backdrop-blur-lg"
+    ? "w-full max-w-[350px] sm:max-w-[500px] bg-contactFormBG/70 rounded-xl shadow-lg p-6 sm:p-7 md:p-8 lg:p-8 backdrop-blur-lg"
     : isInlineLightVariant
     ? "w-full"
-    : "w-[500px] md:w-[500px] lg:w-[500px] xl:w-[700px] bg-contactFormBG/70 rounded-xl shadow-lg p-6 sm:p-7 md:p-8 lg:p-8 backdrop-blur-lg";
+    : "w-full max-w-[350px] md:w-[500px] lg:w-[500px] xl:w-[700px] bg-contactFormBG/70 rounded-xl shadow-lg p-6 sm:p-7 md:p-8 lg:p-8 backdrop-blur-lg";
   const formClasses = isHeroVariant
     ? "flex flex-col gap-4"
     : isInlineLightVariant
@@ -412,7 +414,7 @@ function ContactCard({
           </div>
         )}
 
-        <div className={isInlineLightVariant || isModalVariant ? "md:col-span-2 grid grid-cols-[180px_minmax(0,1fr)] gap-6 items-end" : undefined}>
+        <div className={isInlineLightVariant || isModalVariant ? "md:col-span-2 grid grid-cols-1 gap-6 items-end sm:grid-cols-[180px_minmax(0,1fr)]" : undefined}>
           <div className={isInlineLightVariant || isModalVariant ? undefined : "mb-4"}>
             <label htmlFor="countryCode" className={labelClasses}>
               Country Code:
