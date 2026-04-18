@@ -1,29 +1,36 @@
 // Cloudflare Turnstile configuration
-// The production key is registered only for beseen.moonglade.life.
-// Any other hostname (localhost, staging, preview deploys) uses Cloudflare's
-// official always-passing test key to avoid 110200 / 401 errors.
-// See: https://developers.cloudflare.com/turnstile/troubleshooting/testing/
+//
+// Production key: used on all HTTPS hostnames (production, staging, local HTTPS dev).
+// On HTTP (plain localhost), Turnstile's Private Access Token (PAT) challenges
+// require HTTPS and fail with ERR_SSL_PROTOCOL_ERROR, generating invalid tokens.
+// Solution: run gatsby develop with HTTPS=true (see package.json "dev:https" script).
+//
+// Test key: kept as fallback for CI/automated tests only.
 
 const TURNSTILE_PROD_KEY = "0x4AAAAAAB4Bl0NJyxtMOFfz";
-// Cloudflare's official test key — always passes, works on any domain
+// Cloudflare official test key — only for automated/CI use, NOT for manual testing
 const TURNSTILE_TEST_KEY = "1x00000000000000000000AA";
 
-// All domains registered in the Cloudflare Turnstile widget dashboard
-// AND proxied through Cloudflare (orange cloud) — required for /cdn-cgi/ path.
+// All HTTPS hostnames registered in the Cloudflare Turnstile widget dashboard.
+// localhost is included here for HTTPS local dev (gatsby develop with HTTPS=true).
 const REGISTERED_HOSTNAMES = [
   "beseen.moonglade.life",
+  "www.beseen.moonglade.life",
+  "devmoonglade.irarealty.in",
+  "moonglade.irarealty.in",
+  "moonglade.life",
+  "irarealty.in",
+  "beseen-moonglade-text.netlify.app",
+  "localhost",
+  "127.0.0.1",
 ];
 
-export const getTurnstileSiteKey = (hostname?: string) => {
-  if (!hostname) {
-    return TURNSTILE_TEST_KEY;
+export const getTurnstileSiteKey = (hostname?: string): string => {
+  if (hostname && REGISTERED_HOSTNAMES.includes(hostname)) {
+    return TURNSTILE_PROD_KEY;
   }
-
-  return REGISTERED_HOSTNAMES.includes(hostname)
-    ? TURNSTILE_PROD_KEY
-    : TURNSTILE_TEST_KEY;
+  return TURNSTILE_TEST_KEY;
 };
 
-export const TURNSTILE_SITE_KEY = getTurnstileSiteKey(
-  typeof window !== "undefined" ? window.location.hostname : undefined
-);
+// Not used directly in components — components call getTurnstileSiteKey() at runtime.
+export const TURNSTILE_SITE_KEY = TURNSTILE_PROD_KEY;

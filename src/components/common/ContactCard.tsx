@@ -1,8 +1,9 @@
 import React, { useState, memo, useRef, useCallback, useEffect } from "react";
 import { navigate } from "gatsby";
 import { getCurrentContactFormConfig } from "../../config/contactFormConfig";
-import { TURNSTILE_SITE_KEY } from "../../config/turnstileConfig";
+import { getTurnstileSiteKey } from "../../config/turnstileConfig";
 import { countryCodes } from "../../utils/countryCodes";
+import { useUtm } from "../../hooks/useUtm";
 
 interface ContactCardPropsType {
   setIsModalShow?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -53,27 +54,14 @@ function ContactCard({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isSubmittingRef = useRef(false);
 
-  const [utmData, setUtmData] = useState({
-    utm_source: "",
-    utm_medium: "",
-    utm_campaign: "",
-    utm_term: "",
-  });
+  const utmData = useUtm();
   const [pathname, setPathname] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
       setPathname(window.location.pathname);
-
-      setUtmData({
-        utm_source: params.get("utm_source") || "",
-        utm_medium: params.get("utm_medium") || "",
-        utm_campaign: params.get("utm_campaign") || "",
-        utm_term: params.get("utm_term") || "",
-      });
     }
-  }, []);  
+  }, []);
 
   useEffect(() => setIsClient(true), []);
 
@@ -106,14 +94,21 @@ function ContactCard({
       try {
         const widgetTheme = variant === "hero" ? "dark" : "light";
         const id = (window as any).turnstile.render(turnstileWidgetRef.current, {
-          sitekey: TURNSTILE_SITE_KEY,
+          sitekey: getTurnstileSiteKey(window.location.hostname),
           callback: (token: string) => {
             setTurnstileToken(token);
           },
           "expired-callback": () => setTurnstileToken(""),
           "error-callback": (error: any) => {
-            console.error("Turnstile error:", error);
-            setTurnstileToken("");
+            // Only clear token on a genuine challenge failure (no token obtained yet).
+            // Do NOT clear if the widget already succeeded (token was set via callback).
+            // PAT/Private Access Token failures (ERR_SSL_PROTOCOL_ERROR on localhost)
+            // fire this callback but the token is still valid.
+            setTurnstileToken((prev) => {
+              if (prev) return prev; // keep existing valid token
+              console.error("Turnstile challenge failed:", error);
+              return "";
+            });
           },
           theme: widgetTheme,
           size: widgetSize,
@@ -213,18 +208,14 @@ function ContactCard({
         });
 
         form_payload.append("property", "Moonglade");
+        form_payload.append("turnstileToken", turnstileToken);
 
-        // Build API URL with UTM query parameters and CAPTCHA token
-        const apiUrl = new URL("https://irarealty.in/cms/api/submitMoonglade");
+        // Append UTM parameters to POST body
         Object.entries(utmData).forEach(([key, value]) => {
-          if (value) {
-            apiUrl.searchParams.append(key, value);
-          }
+          if (value) form_payload.append(key, value);
         });
-        // Add CAPTCHA token to query parameters
-        apiUrl.searchParams.append("cf-turnstile-response", turnstileToken);
 
-        const apiResponse = await fetch(apiUrl.toString(), {
+        const apiResponse = await fetch("https://irarealty.in/cms/api/submitMoonglade", {
           method: "POST",
           body: form_payload,
         });
